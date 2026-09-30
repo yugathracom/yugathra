@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Yugathra.lk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col justify-between pb-12">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-rose-600 text-2xl font-black tracking-wider uppercase">Yugathra<span class="text-slate-700">.lk</span></a>
+            <a href="index.html" class="text-xs font-bold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-full hover:bg-rose-100 transition"><i class="fa-solid fa-user-plus mr-1"></i> Register New Profile</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-md w-full mx-auto px-4 mt-12 flex-1 flex items-center">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm w-full space-y-6">
+            <div class="text-center space-y-1">
+                <h2 class="text-xl font-bold text-slate-900 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket text-rose-600"></i> Welcome Back
+                </h2>
+                <p class="text-xs text-slate-500">Sign in to your Yugathra.lk account</p>
+            </div>
+
+            <!-- Alert Box for Errors / 403 / Success -->
+            <div id="loginAlert" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">WhatsApp Number *</label>
+                    <input type="tel" id="loginPhone" required placeholder="0771234567" autocomplete="tel" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-medium focus:ring-2 focus:ring-rose-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password *</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-medium focus:ring-2 focus:ring-rose-500 outline-none">
+                </div>
+
+                <button type="submit" id="loginBtn" class="w-full bg-rose-600 text-white text-xs font-bold py-3 rounded-xl hover:bg-rose-700 transition shadow-sm">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="text-center pt-2 border-t border-slate-100">
+                <p class="text-xs text-slate-500">Don't have an account? <a href="index.html" class="text-rose-600 font-bold hover:underline">Register here</a></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Script -->
+    <script>
+        const API_BASE_URL = window.API_BASE_URL || (
+            window.location.protocol === 'file:'
+                ? 'http://localhost:5000'
+                : window.location.origin
+        );
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('loginPhone').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const alertBox = document.getElementById('loginAlert');
+            const btn = document.getElementById('loginBtn');
+
+            alertBox.classList.add('hidden');
+            btn.disabled = true;
+            btn.textContent = 'Signing in...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, password })
+                });
+
+                const data = await response.json();
+
+                // 🛑 403 Unapproved User Check (Admin Approval pending)
+                if (response.status === 403) {
+                    alertBox.textContent = data.message || 'ඔබගේ ගිණුම තවමත් Admin Approval සඳහා රැඳී ඇත.';
+                    alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 block';
+                    btn.disabled = false;
+                    btn.textContent = 'Sign In';
+                    return;
+                }
+
+                if (response.ok && data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userToken', data.token);
+                    localStorage.setItem('userId', data.userId);
+                    localStorage.setItem('role', data.role);
+
+                    alertBox.textContent = 'Login successful! Redirecting...';
+                    alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 block';
+
+                    setTimeout(() => {
+                        if (data.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'dashboard.html';
+                        }
+                    }, 1000);
+                } else {
+                    alertBox.textContent = data.message || 'Login failed! Please check your credentials.';
+                    alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 block';
+                    btn.disabled = false;
+                    btn.textContent = 'Sign In';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alertBox.textContent = 'Server connection error! Please make sure backend is running.';
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 block';
+                btn.disabled = false;
+                btn.textContent = 'Sign In';
+            }
+        });
+    </script>
+</body>
+</html>

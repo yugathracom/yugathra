@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrimonial Profile Registration - Yugathra.lk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+        .is-invalid { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen pb-12">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <span class="text-rose-600 text-2xl font-black tracking-wider uppercase">Yugathra<span class="text-slate-700">.lk</span></span>
+            <div class="flex items-center gap-3">
+                <a href="login.html" class="text-xs font-bold text-slate-600 hover:text-rose-600">Login</a>
+                <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full"><i class="fa-solid fa-shield-halved text-emerald-600 mr-1"></i> Verified Registration</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-6">
+
+        <!-- STEP PROGRESS INDICATOR -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm mb-6">
+            <div class="flex justify-between items-center text-xs font-bold text-slate-400">
+                <div class="step-indicator active text-rose-600 flex items-center gap-1.5" id="ind-1">
+                    <span class="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-[10px]">1</span> Account & Personal
+                </div>
+                <div class="h-0.5 bg-slate-200 flex-1 mx-2"></div>
+                <div class="step-indicator flex items-center gap-1.5" id="ind-2">
+                    <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px]">2</span> Career
+                </div>
+                <div class="h-0.5 bg-slate-200 flex-1 mx-2"></div>
+                <div class="step-indicator flex items-center gap-1.5" id="ind-3">
+                    <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px]">3</span> Lifestyle
+                </div>
+                <div class="h-0.5 bg-slate-200 flex-1 mx-2"></div>
+                <div class="step-indicator flex items-center gap-1.5" id="ind-4">
+                    <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px]">4</span> Photos
+                </div>
+                <div class="h-0.5 bg-slate-200 flex-1 mx-2"></div>
+                <div class="step-indicator flex items-center gap-1.5" id="ind-5">
+                    <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px]">5</span> Verification
+                </div>
+            </div>
+        </div>
+
+        <form id="registrationForm" onsubmit="event.preventDefault();" class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+
+            <!-- STEP 1: ACCOUNT & PERSONAL INFORMATION -->
+            <div class="step-content active" id="step-1">
+                <h2 class="text-lg font-bold text-slate-900 border-b pb-3 mb-5 flex items-center gap-2">
+                    <i class="fa-solid fa-user-check text-rose-600"></i> Account & Personal Information
+                </h2>
+
+                <!-- NAME FIRST -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">First Name *</label>
+                        <input type="text" id="firstName" required autocomplete="given-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-rose-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Last Name *</label>
+                        <input type="text" id="lastName" required autocomplete="family-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-rose-500 outline-none">
+                    </div>
+                </div>
+
+                <!-- ACCOUNT & OTP SECTION -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 space-y-4">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-lock text-rose-600"></i> Step 1A: Account Verification
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password *</label>
+                            <input type="password" id="password" required minlength="8" autocomplete="new-password" placeholder="Minimum 8 characters" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-rose-500 outline-none">
+                            <span class="text-[10px] text-slate-500 mt-1 block">Use 8+ characters with an uppercase letter, lowercase letter, number, and symbol.</span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">WhatsApp Phone Number *</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="phone" placeholder="0771234567" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-rose-500 outline-none">
+                                <button type="button" onclick="sendOTP()" class="bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-xl whitespace-nowrap hover:bg-slate-800 transition">Send OTP</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">OTP Code *</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="otp" placeholder="6-digit code" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-rose-500 outline-none">
+                                <button type="button" onclick="verifyOTPAndRegister()" class="bg-rose-600 text-white text-xs font-bold px-3 py-2 rounded-xl whitespace-nowrap hover:bg-rose-700 transition">Verify OTP</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="otpStatus" class="text-[11px] font-bold text-emerald-600 hidden flex items-center gap-1">
+                        <i class="fa-solid fa-circle-check"></i> Phone Verified & Account Created!
+                    </div>
+                </div>
+
+                <!-- PERSONAL INFORMATION SECTION -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Sri Lankan National ID Number (NIC) *</label>
+                            <input type="text" id="nicNumber" placeholder="e.g. 970312345V or 199703102345" oninput="processNIC()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono font-bold focus:ring-2 focus:ring-rose-500 outline-none">
+                            <span class="text-[10px] text-slate-500 mt-1 block"><i class="fa-solid fa-lock text-slate-400"></i> Encrypted. Never displayed publicly on your profile.</span>
+                            <span class="text-[10px] text-rose-500 hidden" id="err-nic">Invalid NIC format. Must be 9 digits + V/X or 12 digits.</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-200">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Extracted Gender *</label>
+                                <select id="gender" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-rose-500 outline-none">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Groom (Male)</option>
+                                    <option value="Female">Bride (Female)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Date of Birth *</label>
+                                <input type="text" id="dob" placeholder="DD/MM/YYYY" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-rose-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Age (Years) *</label>
+                                <input type="number" id="ageDisplay" min="18" max="100" placeholder="e.g. 29" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-rose-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Height *</label>
+                        <select id="height" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="">Select Height</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Marital Status *</label>
+                        <select id="maritalStatus" required onchange="toggleChildrenField()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="Unmarried">Unmarried</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                            <option value="Separated">Separated</option>
+                        </select>
+                    </div>
+
+                    <div id="childrenContainer" class="hidden sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Children *</label>
+                        <select id="childrenStatus" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="No Children">No Children</option>
+                            <option value="Living with me">Has children (Living with me)</option>
+                            <option value="Not living with me">Has children (Not living with me)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: EDUCATION & CAREER -->
+            <div class="step-content" id="step-2">
+                <h2 class="text-lg font-bold text-slate-900 border-b pb-3 mb-5 flex items-center gap-2">
+                    <i class="fa-solid fa-briefcase text-rose-600"></i> Education & Career
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Education Qualification *</label>
+                        <select id="education" required onchange="toggleOtherEdu()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="">Select Qualification</option>
+                            <option value="O/L">O/L</option>
+                            <option value="A/L">A/L</option>
+                            <option value="Certificate">Certificate</option>
+                            <option value="Diploma">Diploma</option>
+                            <option value="Higher National Diploma (HND)">Higher National Diploma (HND)</option>
+                            <option value="Bachelor's Degree">Bachelor's Degree</option>
+                            <option value="Master's Degree">Master's Degree</option>
+                            <option value="Doctorate / PhD">Doctorate / PhD</option>
+                            <option value="Professional Qualification">Professional Qualification</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" id="otherEdu" placeholder="Specify Qualification" class="hidden mt-2 w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Occupation *</label>
+                        <select id="occupation" required onchange="toggleOtherOcc()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="">Select Occupation</option>
+                            <option value="IT Professional">IT Professional</option>
+                            <option value="Software Engineer">Software Engineer</option>
+                            <option value="Doctor">Doctor</option>
+                            <option value="Engineer">Engineer</option>
+                            <option value="Accountant">Accountant</option>
+                            <option value="Teacher">Teacher</option>
+                            <option value="Government Employee">Government Employee</option>
+                            <option value="Private Sector Employee">Private Sector Employee</option>
+                            <option value="Business Owner">Business Owner</option>
+                            <option value="Self Employed">Self Employed</option>
+                            <option value="Student">Student</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" id="otherOcc" placeholder="Specify Occupation" class="hidden mt-2 w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Monthly Income Range (LKR) *</label>
+                        <select id="monthlyIncome" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="">Select Monthly Income Range</option>
+                            <option value="Below LKR 50,000">Below LKR 50,000</option>
+                            <option value="LKR 50,000 - LKR 100,000">LKR 50,000 - LKR 100,000</option>
+                            <option value="LKR 100,000 - LKR 200,000">LKR 100,000 - LKR 200,000</option>
+                            <option value="LKR 200,000 - LKR 350,000">LKR 200,000 - LKR 350,000</option>
+                            <option value="LKR 350,000 - LKR 500,000">LKR 350,000 - LKR 500,000</option>
+                            <option value="Above LKR 500,000">Above LKR 500,000</option>
+                            <option value="Prefer Not to Disclose">Prefer Not to Disclose</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Job / Residence Location Type *</label>
+                        <div class="flex gap-4 pt-2">
+                            <label class="inline-flex items-center text-xs font-semibold cursor-pointer">
+                                <input type="radio" name="residenceType" value="Local" checked onchange="toggleLocationType()" class="accent-rose-600 mr-1.5"> Working in Sri Lanka
+                            </label>
+                            <label class="inline-flex items-center text-xs font-semibold cursor-pointer">
+                                <input type="radio" name="residenceType" value="Foreign" onchange="toggleLocationType()" class="accent-rose-600 mr-1.5"> Working Abroad
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="countryContainer" class="hidden">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Job Country *</label>
+                        <select id="jobCountry" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="">Select Country</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Japan">Japan</option>
+                            <option value="New Zealand">New Zealand</option>
+                            <option value="Qatar">Qatar</option>
+                            <option value="United Arab Emirates">United Arab Emirates</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="United States">United States</option>
+                        </select>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">District (Home District in LK) *</label>
+                        <select id="district" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="">Select District</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: CULTURE & LIFESTYLE -->
+            <div class="step-content" id="step-3">
+                <h2 class="text-lg font-bold text-slate-900 border-b pb-3 mb-5 flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-rose-600"></i> Culture & Lifestyle
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Religion *</label>
+                        <select id="religion" required onchange="populateCasteOptions()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="">Select Religion</option>
+                            <option value="Buddhist">Buddhist</option>
+                            <option value="Hindu">Hindu</option>
+                            <option value="Islam">Islam</option>
+                            <option value="Christian">Christian</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-bold text-slate-700 uppercase">Caste / Sect</label>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase bg-slate-100 px-2 py-0.5 rounded">Optional</span>
+                        </div>
+                        <select id="caste" onchange="toggleOtherCaste()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:ring-2 focus:ring-rose-500">
+                            <option value="Prefer Not to Say">Prefer Not to Say / Don't Wish to Specify</option>
+                            <option value="No Caste Preference">No Caste / Non-Believer in Caste</option>
+                        </select>
+                        <input type="text" id="otherCasteInput" placeholder="Specify Caste or Sect" class="hidden mt-2 w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-rose-500 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mother Tongue *</label>
+                        <select id="motherTongue" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="Sinhala">Sinhala</option>
+                            <option value="Tamil">Tamil</option>
+                            <option value="English">English</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Dietary Preference</label>
+                        <select id="diet" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="Non-Vegetarian">Non-Vegetarian</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                            <option value="Vegan">Vegan</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Smoking Habit</label>
+                        <select id="smoking" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="No">No</option>
+                            <option value="Occasionally">Occasionally</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Drinking Habit</label>
+                        <select id="drinking" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="No">No</option>
+                            <option value="Socially">Socially</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+
+                    <!-- FAMILY DETAILS SECTION -->
+                    <div class="sm:col-span-2 border-t border-slate-200 pt-4 mt-2">
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                            <i class="fa-solid fa-users text-rose-600"></i> Family Details (Mother & Father)
+                        </h3>
+                        
+                        <!-- Mother Details -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 mb-3">
+                            <p class="text-[11px] font-bold text-slate-600 mb-2">Mother's Details</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Mother's Name</label>
+                                    <input type="text" id="motherName" placeholder="Full Name" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Mother's Profession</label>
+                                    <input type="text" id="motherProfession" placeholder="Occupation / Housewife" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Mother's Age</label>
+                                    <input type="number" id="motherAge" placeholder="e.g. 55" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Father Details -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+                            <p class="text-[11px] font-bold text-slate-600 mb-2">Father's Details</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Father's Name</label>
+                                    <input type="text" id="fatherName" placeholder="Full Name" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Father's Profession</label>
+                                    <input type="text" id="fatherProfession" placeholder="Occupation / Retired" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Father's Age</label>
+                                    <input type="number" id="fatherAge" placeholder="e.g. 60" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">About Myself *</label>
+                        <textarea id="aboutMyself" required minlength="100" maxlength="1000" oninput="updateCharCount()" placeholder="Tell potential matches a little about your personality, values, career, and partner expectations." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium h-24 focus:ring-2 focus:ring-rose-500 outline-none"></textarea>
+                        <div class="flex justify-between items-center text-[10px] text-slate-400 mt-1">
+                            <span id="bioErr" class="text-rose-500 font-bold hidden">Contact info prohibited in bio! (Email/Phone numbers not allowed)</span>
+                            <span id="charCount" class="ml-auto">0 / 1000 characters (min 100)</span>
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+                                <i class="fa-solid fa-heart-circle-check text-rose-500"></i> What is the soulmate you are looking for?
+                            </label>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase bg-white border border-slate-200 px-2 py-0.5 rounded">Optional</span>
+                        </div>
+                        <textarea id="soulmatePreferences" maxlength="500" placeholder="e.g. Caring, well-educated, understanding partner with shared values..." class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-medium h-24 focus:ring-2 focus:ring-rose-500 outline-none"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: PHOTOS & PRIVACY -->
+            <div class="step-content" id="step-4">
+                <h2 class="text-lg font-bold text-slate-900 border-b pb-3 mb-5 flex items-center gap-2">
+                    <i class="fa-solid fa-camera text-rose-600"></i> Profile Photo & Privacy
+                </h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Profile Photo *</label>
+                        <div class="flex flex-col sm:flex-row items-center gap-4">
+                            <div class="w-32 h-32 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative" id="photoPreviewContainer">
+                                <i class="fa-solid fa-user text-3xl text-slate-300" id="photoIcon"></i>
+                                <img id="photoPreview" class="w-full h-full object-cover hidden">
+                            </div>
+                            <div class="space-y-2">
+                                <input type="file" id="profilePhotoInput" accept="image/jpeg,image/png,image/webp" onchange="previewPublicPhoto(event)" class="hidden">
+                                <button type="button" onclick="document.getElementById('profilePhotoInput').click()" class="bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-slate-800 transition">Upload Photo</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex justify-between items-center">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Public Photo Visibility</h4>
+                            <p class="text-[11px] text-slate-500">If disabled, members must request permission to view your photo.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="photoVisibility" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: IDENTITY VERIFICATION -->
+            <div class="step-content" id="step-5">
+                <h2 class="text-lg font-bold text-slate-900 border-b pb-3 mb-5 flex items-center gap-2">
+                    <i class="fa-solid fa-id-card text-rose-600"></i> Identity Verification (Admin Only)
+                </h2>
+
+                <div class="space-y-4 text-center">
+                    <div class="w-full max-w-sm h-64 mx-auto bg-slate-900 rounded-2xl overflow-hidden relative flex items-center justify-center">
+                        <video id="webcam" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+                        <canvas id="selfieCanvas" class="w-full h-full object-cover hidden"></canvas>
+                        <div id="cameraPlaceholder" class="text-slate-400 space-y-2">
+                            <i class="fa-solid fa-camera text-3xl"></i>
+                            <p class="text-xs">Camera Inactive</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center gap-3">
+                        <button type="button" id="startCamBtn" onclick="initCamera()" class="bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl">Start Camera</button>
+                        <button type="button" id="captureBtn" onclick="takeSelfie()" disabled class="bg-rose-600 text-white text-xs font-bold px-4 py-2 rounded-xl disabled:opacity-40">Capture Selfie</button>
+                        <button type="button" id="retakeBtn" onclick="initCamera()" class="hidden bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl">Retake</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NAVIGATION BUTTONS -->
+            <div class="flex justify-between pt-6 border-t border-slate-200">
+                <button type="button" id="prevBtn" onclick="navigateStep(-1)" disabled class="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold disabled:opacity-30">Back</button>
+                <button type="button" id="nextBtn" onclick="navigateStep(1)" class="px-5 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 transition">Continue</button>
+            </div>
+
+        </form>
+    </main>
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirmModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <h3 class="text-base font-bold text-slate-900 border-b pb-2">Review Information Before Submission</h3>
+            
+            <div id="summaryContent" class="text-xs space-y-1.5 text-slate-600 max-h-60 overflow-y-auto font-medium"></div>
+
+            <div class="flex justify-end gap-3 pt-3 border-t">
+                <button onclick="document.getElementById('confirmModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl">Edit Profile</button>
+                <button onclick="submitProfileForm()" class="px-4 py-2 bg-rose-600 text-white font-bold text-xs rounded-xl hover:bg-rose-700">Submit for Verification</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Script -->
+    <script>
+        const API_BASE_URL = window.API_BASE_URL || (
+            window.location.protocol === 'file:'
+                ? 'http://localhost:5000'
+                : window.location.origin
+        );
+
+        const DISTRICTS = ["Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara", "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", "Matara", "Moneragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"];
+
+        const CASTE_DICTIONARY = {
+            "Buddhist": ["Govigama", "Karava", "Salagama", "Durava", "Bathgama", "Wahumpura", "Navandanna", "Radawa", "Patti", "Bodhi Vanser"],
+            "Hindu": ["Vellalar", "Karaiyar", "Chettiar", "Viswakarma", "Nalavar", "Pallar", "Paraiyar", "Ambattar"],
+            "Islam": ["Sunni", "Shia", "Memon", "Malay"],
+            "Christian": ["Govigama", "Karava", "Salagama", "Vellalar", "Karaiyar", "Chettiar"],
+            "Other": ["Govigama", "Karava", "Salagama", "Vellalar", "Karaiyar", "Sunni", "Shia"]
+        };
+
+        let currentStep = 1;
+        let isPhoneVerified = false;
+        let webcamStream = null;
+        let selfieCapturedData = null;
+        let publicPhotoData = null;
+        const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initDistrictsAndHeights();
+            populateCasteOptions();
+        });
+
+        // 1. OTP API Calls
+        async function sendOTP() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const password = document.getElementById('password').value;
+            const phone = document.getElementById('phone').value.trim();
+            if (!firstName || !lastName) return alert('Please enter your first name and last name first.');
+            if (!strongPasswordPattern.test(password)) {
+                return alert('Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.');
+            }
+            if (!phone) return alert('කරුණාකර Phone Number එක ඇතුළත් කරන්න.');
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/v1/auth/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone })
+                });
+                const data = await res.json();
+                alert(data.message || 'OTP Code එක යවන ලදී!');
+            } catch (err) {
+                alert('OTP යැවීම අසාර්ථක විය!');
+            }
+        }
+
+        async function verifyOTPAndRegister() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const password = document.getElementById('password').value;
+            const phone = document.getElementById('phone').value.trim();
+            const otp = document.getElementById('otp').value.trim();
+
+            if (!firstName || !lastName || !password || !phone || !otp) {
+                alert('Please complete first name, last name, password, WhatsApp number, and OTP.');
+                return;
+            }
+            if (!strongPasswordPattern.test(password)) {
+                alert('Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/v1/auth/verify-and-register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstName, lastName, password, phone, otp })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    localStorage.setItem('userToken', data.token);
+                    localStorage.setItem('userId', data.userId); 
+                    
+                    isPhoneVerified = true;
+                    document.getElementById('otpStatus').classList.remove('hidden');
+                    alert('✅ Account created! දැන් Personal Information ඇතුළත් කරන්න.');
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            } catch (err) {
+                alert('Server connection error!');
+            }
+        }
+
+        function initDistrictsAndHeights() {
+            const distSel = document.getElementById('district');
+            distSel.innerHTML += DISTRICTS.map(d => `<option value="${d}">${d}</option>`).join('');
+
+            const heightSel = document.getElementById('height');
+            for (let cm = 140; cm <= 210; cm++) {
+                const ft = Math.floor(cm / 30.48);
+                const inches = Math.round((cm % 30.48) / 2.54);
+                heightSel.innerHTML += `<option value="${cm}">${ft} ft ${inches} in (${cm} cm)</option>`;
+            }
+        }
+
+        function populateCasteOptions() {
+            const religion = document.getElementById('religion').value;
+            const casteSel = document.getElementById('caste');
+            casteSel.innerHTML = `
+                <option value="Prefer Not to Say">Prefer Not to Say / Don't Wish to Specify</option>
+                <option value="No Caste Preference">No Caste / Non-Believer in Caste</option>
+            `;
+
+            const list = CASTE_DICTIONARY[religion] || [];
+            if (list.length > 0) {
+                let optGroup = `<optgroup label="Common ${religion} Options">`;
+                list.forEach(c => optGroup += `<option value="${c}">${c}</option>`);
+                optGroup += `</optgroup>`;
+                casteSel.innerHTML += optGroup;
+            }
+            casteSel.innerHTML += `<option value="Other">Other (Specify below)</option>`;
+            toggleOtherCaste();
+        }
+
+        function toggleOtherCaste() {
+            const casteVal = document.getElementById('caste').value;
+            document.getElementById('otherCasteInput').classList.toggle('hidden', casteVal !== 'Other');
+        }
+
+        function processNIC() {
+            const nicStr = document.getElementById('nicNumber').value.trim().toUpperCase();
+            const errSpan = document.getElementById('err-nic');
+            let year, days, gender;
+
+            if (/^\d{9}[VX]$/.test(nicStr)) {                 year = 1900 + parseInt(nicStr.substring(0, 2));                 days = parseInt(nicStr.substring(2, 5));             } else if (/^\d{12}$/.test(nicStr)) {
+                year = parseInt(nicStr.substring(0, 4));
+                days = parseInt(nicStr.substring(4, 7));
+            } else {
+                errSpan.classList.remove('hidden');
+                resetNICFields();
+                return;
+            }
+
+            errSpan.classList.add('hidden');
+            if (days > 500) { gender = "Female"; days -= 500; } else { gender = "Male"; }
+
+            const dobDate = getDateFromDayOfYear(year, days);
+            if (!dobDate) return errSpan.classList.remove('hidden');
+
+            document.getElementById('gender').value = gender;
+            document.getElementById('dob').value = dobDate.toLocaleDateString('en-GB');
+            document.getElementById('ageDisplay').value = calculateAge(dobDate);
+        }
+
+        function resetNICFields() {
+            document.getElementById('gender').value = "";
+            document.getElementById('dob').value = "";
+            document.getElementById('ageDisplay').value = "";
+        }
+
+        function getDateFromDayOfYear(year, dayOfYear) {
+            if (dayOfYear < 1 || dayOfYear > 366) return null;
+            const date = new Date(year, 0);
+            date.setDate(dayOfYear);
+            return date;
+        }
+
+        function calculateAge(birthDate) {
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+            return age;
+        }
+
+        function toggleChildrenField() {
+            document.getElementById('childrenContainer').classList.toggle('hidden', document.getElementById('maritalStatus').value === 'Unmarried');
+        }
+
+        function toggleOtherEdu() {
+            document.getElementById('otherEdu').classList.toggle('hidden', document.getElementById('education').value !== 'Other');
+        }
+
+        function toggleOtherOcc() {
+            document.getElementById('otherOcc').classList.toggle('hidden', document.getElementById('occupation').value !== 'Other');
+        }
+
+        function toggleLocationType() {
+            const val = document.querySelector('input[name="residenceType"]:checked').value;
+            document.getElementById('countryContainer').classList.toggle('hidden', val !== 'Foreign');
+        }
+
+        function validateBioContactInfo(text) {
+            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+            const phoneRegex = /(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,4}\)?[-.\s]?)?\d{3,4}[-.\s]?\d{4,5}/;
+            return emailRegex.test(text) || phoneRegex.test(text);
+        }
+
+        function updateCharCount() {
+            const bio = document.getElementById('aboutMyself').value;
+            const bioErr = document.getElementById('bioErr');
+            const hasContact = validateBioContactInfo(bio);
+
+            if (hasContact) {
+                bioErr.classList.remove('hidden');
+                document.getElementById('aboutMyself').classList.add('is-invalid');
+            } else {
+                bioErr.classList.add('hidden');
+                document.getElementById('aboutMyself').classList.remove('is-invalid');
+            }
+
+            document.getElementById('charCount').textContent = `${bio.length} / 1000 characters (min 100)`;
+        }
+
+        function previewPublicPhoto(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    publicPhotoData = evt.target.result;
+                    document.getElementById('photoPreview').src = publicPhotoData;
+                    document.getElementById('photoPreview').classList.remove('hidden');
+                    document.getElementById('photoIcon').classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function initCamera() {
+            try {
+                webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.getElementById('webcam');
+                video.srcObject = webcamStream;
+                video.classList.remove('hidden');
+                document.getElementById('selfieCanvas').classList.add('hidden');
+                document.getElementById('cameraPlaceholder').classList.add('hidden');
+                document.getElementById('captureBtn').disabled = false;
+            } catch (err) {
+                alert("Camera Access Error!");
+            }
+        }
+
+        function takeSelfie() {
+            const video = document.getElementById('webcam');
+            const canvas = document.getElementById('selfieCanvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            selfieCapturedData = canvas.toDataURL('image/jpeg');
+            video.classList.add('hidden');
+            canvas.classList.remove('hidden');
+            if (webcamStream) webcamStream.getTracks().forEach(t => t.stop());
+            document.getElementById('captureBtn').disabled = true;
+            document.getElementById('retakeBtn').classList.remove('hidden');
+        }
+
+        function navigateStep(direction) {
+            if (direction === 1 && !validateCurrentStep()) return;
+
+            currentStep += direction;
+            if (currentStep > 5) {
+                showConfirmationModal();
+                currentStep = 5;
+                return;
+            }
+
+            document.querySelectorAll('.step-content').forEach((el, i) => {
+                el.classList.toggle('active', i + 1 === currentStep);
+            });
+
+            document.querySelectorAll('.step-indicator').forEach((el, i) => {
+                if (i + 1 <= currentStep) el.classList.add('text-rose-600');
+                else el.classList.remove('text-rose-600');
+            });
+
+            document.getElementById('prevBtn').disabled = currentStep === 1;
+            document.getElementById('nextBtn').textContent = currentStep === 5 ? 'Review & Submit' : 'Continue';
+        }
+
+        function validateCurrentStep() {
+            if (currentStep === 1) {
+                if (!isPhoneVerified) {
+                    alert('කරුණාකර පළමුව Mobile Number එක OTP එකෙන් Verify කරගන්න.');
+                    return false;
+                }
+                const fName = document.getElementById('firstName').value.trim();
+                const age = document.getElementById('ageDisplay').value;
+                if (!fName || !age) {
+                    alert('Please complete all personal fields and valid NIC.');
+                    return false;
+                }
+            }
+            if (currentStep === 2) {
+                if (!document.getElementById('education').value || !document.getElementById('occupation').value || !document.getElementById('monthlyIncome').value) {
+                    alert('Please complete education and income fields.');
+                    return false;
+                }
+            }
+            if (currentStep === 3) {
+                const bio = document.getElementById('aboutMyself').value;
+                if (validateBioContactInfo(bio)) {
+                    alert('Bio එකෙහි ඊමේල් හෝ දුරකථන අංක ඇතුළත් කිරීම තහනම්ය.');
+                    return false;
+                }
+            }
+            if (currentStep === 4 && !publicPhotoData) {
+                alert('Please upload a profile photo.');
+                return false;
+            }
+            if (currentStep === 5 && !selfieCapturedData) {
+                alert('Please capture a verification selfie.');
+                return false;
+            }
+            return true;
+        }
+
+        function showConfirmationModal() {
+            const summary = document.getElementById('summaryContent');
+            summary.innerHTML = `
+                <p><strong>Name:</strong> ${document.getElementById('firstName').value} ${document.getElementById('lastName').value}</p>
+                <p><strong>NIC:</strong> Encrypted (${document.getElementById('nicNumber').value.substring(0,4)}****)</p>
+                <p><strong>DOB / Age:</strong> ${document.getElementById('dob').value} (${document.getElementById('ageDisplay').value} years)</p>
+                <p><strong>District:</strong> ${document.getElementById('district').value}</p>
+                <p><strong>Occupation:</strong> ${document.getElementById('occupation').value}</p>
+                <p><strong>Verification Selfie:</strong> <span class="text-emerald-600 font-bold">Captured (Private)</span></p>
+            `;
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+
+        async function submitProfileForm() {
+            const token = localStorage.getItem('userToken');
+            const userId = localStorage.getItem('userId');
+
+            if (!userId) {
+                alert('User ID එක සොයාගත නොහැකි විය. කරුණාකර පළමු Step එකේ OTP verification එක නැවත කරන්න.');
+                return;
+            }
+
+            const payload = {
+                userId: userId,
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                nicNumber: document.getElementById('nicNumber').value,
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                age: parseInt(document.getElementById('ageDisplay').value) || 0,
+                heightCm: parseInt(document.getElementById('height').value) || 160,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                childrenStatus: document.getElementById('childrenStatus').value || 'No Children',
+                education: document.getElementById('education').value === 'Other' ? document.getElementById('otherEdu').value : document.getElementById('education').value,
+                occupation: document.getElementById('occupation').value === 'Other' ? document.getElementById('otherOcc').value : document.getElementById('occupation').value,
+                monthlyIncome: document.getElementById('monthlyIncome').value,
+                residenceType: document.querySelector('input[name="residenceType"]:checked').value,
+                jobCountry: document.getElementById('jobCountry').value || 'Sri Lanka',
+                district: document.getElementById('district').value,
+                religion: document.getElementById('religion').value,
+                caste: document.getElementById('caste').value,
+                 foodPreferences: document.getElementById('diet').value,
+                 smoking: document.getElementById('smoking').value,
+                 drinking: document.getElementById('drinking').value,
+                motherTongue: document.getElementById('motherTongue').value,
+                motherName: document.getElementById('motherName').value,
+                motherProfession: document.getElementById('motherProfession').value,
+                motherAge: document.getElementById('motherAge').value,
+                fatherName: document.getElementById('fatherName').value,
+                fatherProfession: document.getElementById('fatherProfession').value,
+                fatherAge: document.getElementById('fatherAge').value,
+                aboutMyself: document.getElementById('aboutMyself').value,
+                soulmatePreferences: document.getElementById('soulmatePreferences').value,
+                publicPhoto: publicPhotoData,
+                isPhotoVisible: document.getElementById('photoVisibility').checked,
+                verificationSelfie: selfieCapturedData
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/profiles/complete-setup`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    alert('Profile submitted successfully! You can now login with your WhatsApp number.');
+                    window.location.href = 'login.html';
+                } else {
+                    alert('Submission Error: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Server Connection Error!');
+            }
+        }
+    </script>
+</body>
+</html>

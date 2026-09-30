@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Center - Yugathra.lk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8fafc; }
+        .glass { background: rgba(255,255,255,.82); backdrop-filter: blur(14px); }
+        .metric-card { transition: transform .2s ease, box-shadow .2s ease; }
+        .metric-card:hover { transform: translateY(-3px); box-shadow: 0 18px 35px -18px rgba(15,23,42,.35); }
+        .nav-active { background: linear-gradient(135deg,#e11d48,#be123c); color: white; box-shadow: 0 10px 20px -12px #e11d48; }
+        .drawer { transition: transform .25s ease; }
+    </style>
+</head>
+<body class="text-slate-800">
+    <div class="min-h-screen flex">
+        <aside class="hidden lg:flex w-72 bg-slate-950 text-white p-6 flex-col">
+            <div class="flex items-center gap-3 mb-10">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-600 flex items-center justify-center shadow-lg">
+                    <i class="fa-solid fa-heart text-xl"></i>
+                </div>
+                <div>
+                    <div class="font-black tracking-wide text-lg">Yugathra<span class="text-rose-400">.lk</span></div>
+                    <div class="text-[10px] uppercase tracking-[.24em] text-slate-400">Admin center</div>
+                </div>
+            </div>
+            <nav class="space-y-2 text-sm font-semibold">
+                <button onclick="showSection('overview')" id="nav-overview" class="nav-active w-full text-left px-4 py-3 rounded-xl flex items-center gap-3"><i class="fa-solid fa-grid-2 w-5"></i> Overview</button>
+                <button onclick="showSection('approvals')" id="nav-approvals" class="w-full text-left px-4 py-3 rounded-xl text-slate-300 hover:bg-white/10 flex items-center gap-3"><i class="fa-solid fa-user-check w-5"></i> Approvals <span id="sidePending" class="ml-auto bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full">0</span></button>
+                <button onclick="showSection('online')" id="nav-online" class="w-full text-left px-4 py-3 rounded-xl text-slate-300 hover:bg-white/10 flex items-center gap-3"><i class="fa-solid fa-signal w-5"></i> Online now</button>
+                <button onclick="showSection('users')" id="nav-users" class="w-full text-left px-4 py-3 rounded-xl text-slate-300 hover:bg-white/10 flex items-center gap-3"><i class="fa-solid fa-users w-5"></i> All accounts</button>
+                <button onclick="showSection('activity')" id="nav-activity" class="w-full text-left px-4 py-3 rounded-xl text-slate-300 hover:bg-white/10 flex items-center gap-3"><i class="fa-solid fa-clock-rotate-left w-5"></i> Recent activity</button>
+            </nav>
+            <div class="mt-auto rounded-2xl bg-white/5 border border-white/10 p-4 text-xs text-slate-300">
+                <div class="flex items-center gap-2 text-emerald-400 font-bold"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Control center live</div>
+                <p class="mt-2 text-slate-400 leading-relaxed">Online counts refresh automatically every 15 seconds.</p>
+            </div>
+        </aside>
+
+        <main class="flex-1 min-w-0">
+            <header class="sticky top-0 z-30 glass border-b border-slate-200">
+                <div class="px-5 sm:px-8 py-4 flex items-center justify-between gap-4">
+                    <div>
+                        <p class="text-[10px] uppercase tracking-[.25em] text-rose-600 font-black">Yugathra.lk operations</p>
+                        <h1 class="text-xl sm:text-2xl font-black text-slate-950 mt-1">Admin control center</h1>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="lastUpdated" class="hidden sm:inline text-[11px] text-slate-400">Not refreshed yet</span>
+                        <button onclick="refreshAll()" class="w-10 h-10 rounded-xl bg-white border border-slate-200 hover:border-rose-300 text-slate-600 hover:text-rose-600 shadow-sm" title="Refresh">
+                            <i id="refreshIcon" class="fa-solid fa-rotate"></i>
+                        </button>
+                        <button onclick="logout()" class="px-3 py-2.5 rounded-xl bg-slate-950 text-white text-xs font-bold hover:bg-slate-800">Logout</button>
+                    </div>
+                </div>
+                <div class="lg:hidden px-5 pb-3 flex gap-2 overflow-x-auto">
+                    <button onclick="showSection('overview')" class="nav-active px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap">Overview</button>
+                    <button onclick="showSection('approvals')" class="px-3 py-2 rounded-lg bg-white border text-xs font-bold whitespace-nowrap">Approvals</button>
+                    <button onclick="showSection('online')" class="px-3 py-2 rounded-lg bg-white border text-xs font-bold whitespace-nowrap">Online now</button>
+                    <button onclick="showSection('users')" class="px-3 py-2 rounded-lg bg-white border text-xs font-bold whitespace-nowrap">Accounts</button>
+                </div>
+            </header>
+
+            <div class="p-5 sm:p-8 max-w-[1600px] mx-auto">
+                <section id="section-overview">
+                    <div class="rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-rose-950 text-white p-6 sm:p-8 mb-7 overflow-hidden relative">
+                        <div class="relative z-10 max-w-2xl">
+                            <p class="text-rose-300 text-xs font-bold uppercase tracking-[.22em]">Good to see you</p>
+                            <h2 class="text-2xl sm:text-4xl font-black mt-2">Keep the community trusted.</h2>
+                            <p class="text-slate-300 text-sm mt-3 leading-relaxed">Review new accounts, watch live activity, and keep every profile experience safe and respectful.</p>
+                            <button onclick="showSection('approvals')" class="mt-6 bg-white text-slate-950 px-4 py-3 rounded-xl text-xs font-black hover:bg-rose-50"><i class="fa-solid fa-arrow-right mr-2 text-rose-600"></i>Review queue</button>
+                        </div>
+                        <i class="fa-solid fa-shield-heart absolute -right-5 -bottom-8 text-[190px] text-white/5"></i>
+                    </div>
+
+                    <div class="grid grid-cols-2 xl:grid-cols-5 gap-4 mb-7">
+                        <div class="metric-card bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"><div class="flex justify-between"><span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center"><i class="fa-solid fa-users"></i></span><span class="text-[10px] text-slate-400 font-bold">TOTAL</span></div><div id="statTotal" class="text-3xl font-black mt-5">—</div><div class="text-xs text-slate-500 mt-1">Registered accounts</div></div>
+                        <div class="metric-card bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"><div class="flex justify-between"><span class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-hourglass-half"></i></span><span class="text-[10px] text-amber-500 font-bold">REVIEW</span></div><div id="statPending" class="text-3xl font-black mt-5">—</div><div class="text-xs text-slate-500 mt-1">Awaiting review</div></div>
+                        <div class="metric-card bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"><div class="flex justify-between"><span class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-circle-check"></i></span><span class="text-[10px] text-emerald-500 font-bold">LIVE</span></div><div id="statApproved" class="text-3xl font-black mt-5">—</div><div class="text-xs text-slate-500 mt-1">Approved accounts</div></div>
+                        <div class="metric-card bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"><div class="flex justify-between"><span class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center"><i class="fa-solid fa-user-slash"></i></span><span class="text-[10px] text-rose-500 font-bold">REJECTED</span></div><div id="statRejected" class="text-3xl font-black mt-5">—</div><div class="text-xs text-slate-500 mt-1">Rejected accounts</div></div>
+                        <div class="metric-card bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"><div class="flex justify-between"><span class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center"><i class="fa-solid fa-tower-broadcast"></i></span><span class="text-[10px] text-sky-500 font-bold">NOW</span></div><div id="statOnline" class="text-3xl font-black mt-5">—</div><div class="text-xs text-slate-500 mt-1">Members online</div></div>
+                    </div>
+
+                    <div class="grid xl:grid-cols-2 gap-6">
+                        <div class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-sm">
+                            <div class="flex justify-between items-center mb-5"><div><h3 class="font-black text-slate-950">Approval queue</h3><p class="text-xs text-slate-500 mt-1">Accounts needing attention</p></div><button onclick="showSection('approvals')" class="text-xs text-rose-600 font-bold">View all →</button></div>
+                            <div id="overviewApprovals" class="space-y-3"><div class="skeleton">Loading…</div></div>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-sm">
+                            <div class="flex justify-between items-center mb-5"><div><h3 class="font-black text-slate-950">Online right now</h3><p class="text-xs text-slate-500 mt-1">Live member presence</p></div><button onclick="showSection('online')" class="text-xs text-rose-600 font-bold">Open monitor →</button></div>
+                            <div id="overviewOnline" class="space-y-3"><div class="skeleton">Loading…</div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="section-approvals" class="hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6"><div><p class="text-xs text-rose-600 font-black uppercase tracking-widest">Moderation</p><h2 class="text-2xl font-black mt-1">Approval queue</h2><p class="text-sm text-slate-500 mt-1">Review legacy or manually submitted accounts.</p></div><button onclick="loadApprovals()" class="px-4 py-2.5 bg-white border rounded-xl text-xs font-bold hover:border-rose-300"><i class="fa-solid fa-rotate mr-2"></i>Refresh queue</button></div>
+                    <div id="approvalList" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+                </section>
+
+                <section id="section-online" class="hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6"><div><p class="text-xs text-emerald-600 font-black uppercase tracking-widest">Live presence</p><h2 class="text-2xl font-black mt-1">Members online now</h2><p class="text-sm text-slate-500 mt-1">Presence is updated from active dashboard sessions.</p></div><span id="onlineCountLabel" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-black">0 online</span></div>
+                    <div id="onlineList" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+                </section>
+
+                <section id="section-users" class="hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6"><div><p class="text-xs text-sky-600 font-black uppercase tracking-widest">Directory</p><h2 class="text-2xl font-black mt-1">All member accounts</h2></div><div class="flex gap-2"><input id="userSearch" onkeydown="if(event.key==='Enter') loadUsers()" placeholder="Search name or phone" class="px-3 py-2.5 rounded-xl border bg-white text-xs w-52"><select id="userStatus" onchange="loadUsers()" class="px-3 py-2.5 rounded-xl border bg-white text-xs font-bold"><option value="all">All status</option><option value="approved">Approved</option><option value="pending">Pending</option><option value="rejected">Rejected</option><option value="blocked">Blocked</option></select><button onclick="loadUsers()" class="px-3 rounded-xl bg-slate-950 text-white"><i class="fa-solid fa-search"></i></button></div></div>
+                    <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm"><div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead class="bg-slate-50 border-b"><tr><th class="p-4 font-black">Member</th><th class="p-4 font-black">WhatsApp</th><th class="p-4 font-black">Location</th><th class="p-4 font-black">Status</th><th class="p-4 font-black text-right">Actions</th></tr></thead><tbody id="usersTable"></tbody></table></div></div>
+                </section>
+
+                <section id="section-activity" class="hidden">
+                    <div class="mb-6"><p class="text-xs text-violet-600 font-black uppercase tracking-widest">Audit view</p><h2 class="text-2xl font-black mt-1">Recent account activity</h2><p class="text-sm text-slate-500 mt-1">Latest registrations and account status changes available from the current database.</p></div>
+                    <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm"><div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead class="bg-slate-50 border-b"><tr><th class="p-4 font-black">Member</th><th class="p-4 font-black">Registered</th><th class="p-4 font-black">Location</th><th class="p-4 font-black">Status</th></tr></thead><tbody id="activityTable"></tbody></table></div></div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div id="toast" class="fixed bottom-5 right-5 hidden z-50 bg-slate-950 text-white px-4 py-3 rounded-xl text-xs font-bold shadow-xl"></div>
+    <div id="userDrawer" class="fixed inset-0 hidden z-40 bg-slate-950/40 backdrop-blur-sm" onclick="closeDrawer(event)">
+        <div class="drawer absolute right-0 top-0 h-full w-full max-w-xl bg-white p-6 overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between pb-4 border-b">
+                <h3 class="font-black text-base">Member Full Profile & Management</h3>
+                <button onclick="closeDrawer()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="drawerContent" class="mt-6 space-y-6">Loading…</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.API_BASE_URL || (window.location.protocol === 'file:' ? 'http://localhost:5000' : window.location.origin);
+        const token = localStorage.getItem('token') || localStorage.getItem('userToken');
+        const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+        const statusLabel = value => ({1:['Approved','bg-emerald-50 text-emerald-700'],2:['Rejected','bg-rose-50 text-rose-700'],3:['Blocked','bg-slate-100 text-slate-700']}[Number(value)] || ['Pending','bg-amber-50 text-amber-700']);
+        const fullName = item => `${item.firstName || item.first_name || ''} ${item.lastName || item.last_name || ''}`.trim() || 'Unnamed member';
+        
+        const photo = value => {
+            if (!value) return 'https://via.placeholder.com/120x120?text=User';
+            if (value.startsWith('http') || value.startsWith('data:image') || value.startsWith('blob:')) return value;
+            return `${API_BASE_URL}${value.startsWith('/') ? '' : '/'}${value}`;
+        };
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (!token) return window.location.href = 'login.html';
+            await refreshAll();
+            setInterval(loadOnline, 15000);
+        });
+
+        async function api(path, options = {}) {
+            const response = await fetch(`${API_BASE_URL}${path}`, { ...options, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...(options.headers || {}) } });
+            const data = await response.json().catch(() => ({}));
+            if (response.status === 401 || response.status === 403) throw new Error(data.message || 'Admin access required');
+            return data;
+        }
+
+        function showSection(name) {
+            ['overview','approvals','online','users','activity'].forEach(section => {
+                document.getElementById(`section-${section}`).classList.toggle('hidden', section !== name);
+                const nav = document.getElementById(`nav-${section}`);
+                if (nav) nav.classList.toggle('nav-active', section === name);
+            });
+            if (name === 'approvals') loadApprovals();
+            if (name === 'online') loadOnline();
+            if (name === 'users') loadUsers();
+            if (name === 'activity') loadActivity();
+        }
+
+        async function refreshAll() {
+            const icon = document.getElementById('refreshIcon');
+            icon.classList.add('fa-spin');
+            try {
+                const [stats, approvals, online] = await Promise.all([api('/api/v1/admin/stats'), api('/api/v1/admin/pending-requests'), api('/api/v1/admin/online-users')]);
+                const s = stats.stats || {};
+                document.getElementById('statTotal').textContent = s.totalUsers ?? 0;
+                document.getElementById('statPending').textContent = s.pendingUsers ?? 0;
+                document.getElementById('statApproved').textContent = s.approvedUsers ?? 0;
+                document.getElementById('statRejected').textContent = s.rejectedUsers ?? 0;
+                document.getElementById('statOnline').textContent = online.count ?? 0;
+                document.getElementById('sidePending').textContent = s.pendingUsers ?? 0;
+                renderApprovals(approvals.data || [], 'overviewApprovals', 4);
+                renderOnline(online.data || [], 'overviewOnline', 4);
+                document.getElementById('lastUpdated').textContent = `Updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+            } catch (error) { showToast(error.message, true); }
+            finally { icon.classList.remove('fa-spin'); }
+        }
+
+        async function loadApprovals() {
+            const target = document.getElementById('approvalList');
+            target.innerHTML = '<div class="text-sm text-slate-400">Loading queue…</div>';
+            try { const result = await api('/api/v1/admin/pending-requests'); renderApprovals(result.data || [], 'approvalList'); } catch (error) { target.innerHTML = `<div class="text-rose-600 text-sm">${esc(error.message)}</div>`; }
+        }
+
+        function renderApprovals(items, targetId, limit = null) {
+            const target = document.getElementById(targetId);
+            const list = limit ? items.slice(0, limit) : items;
+            if (!list.length) { target.innerHTML = '<div class="text-sm text-slate-400 py-4">No accounts are waiting for review.</div>'; return; }
+            target.innerHTML = list.map(item => `
+                <div class="border border-slate-200 rounded-2xl p-4 bg-white hover:border-amber-300 transition">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><h4 class="font-black text-sm">${esc(fullName(item))}</h4><p class="text-[11px] text-slate-500 mt-1">${esc(item.occupation || 'Profile incomplete')} · ${esc(item.district || 'No district')}</p></div>
+                        <span class="text-amber-600 bg-amber-50 rounded-lg px-2 py-1 text-[10px] font-black">REVIEW</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-3"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>${esc(item.phone || 'No phone')}</p>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="approveUser('${esc(item._id || item.userId)}')" class="flex-1 py-2 rounded-xl bg-emerald-600 text-white text-[11px] font-black hover:bg-emerald-700">Approve</button>
+                        <button onclick="rejectUser('${esc(item._id || item.userId)}')" class="flex-1 py-2 rounded-xl bg-rose-50 text-rose-700 text-[11px] font-black hover:bg-rose-100">Reject</button>
+                        <button onclick="blockUser('${esc(item._id || item.userId)}')" class="py-2 px-3 rounded-xl bg-slate-900 text-white text-[11px] font-black hover:bg-slate-800" title="Block User"><i class="fa-solid fa-ban"></i></button>
+                        <button onclick="openUser('${esc(item._id || item.userId)}')" class="w-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                </div>`).join('');
+        }
+
+        async function approveUser(id) {
+            if (!confirm('Approve this account?')) return;
+            try { const result = await api('/api/v1/admin/approve-user', { method:'POST', body: JSON.stringify({ userId:id }) }); showToast(result.message || 'Account approved'); await refreshAll(); loadApprovals(); loadUsers(); closeDrawer(); } catch (error) { showToast(error.message, true); }
+        }
+        
+        async function rejectUser(id) {
+            const reason = prompt('Optional reason for rejection:', 'Profile information needs review');
+            if (reason === null) return;
+            try { const result = await api('/api/v1/admin/reject-user', { method:'POST', body: JSON.stringify({ userId:id, reason }) }); showToast(result.message || 'Account rejected'); await refreshAll(); loadApprovals(); loadUsers(); closeDrawer(); } catch (error) { showToast(error.message, true); }
+        }
+
+        async function blockUser(id) {
+            const reason = prompt('Optional reason for blocking:', 'Violation of community guidelines');
+            if (reason === null) return;
+            try { 
+                const result = await api('/api/v1/admin/block-user', { method:'POST', body: JSON.stringify({ userId:id, reason }) }); 
+                showToast(result.message || 'Account blocked successfully'); 
+                await refreshAll(); 
+                loadApprovals(); 
+                loadUsers(); 
+                closeDrawer(); 
+            } catch (error) { showToast(error.message, true); }
+        }
+
+        async function loadOnline() {
+            try { const result = await api('/api/v1/admin/online-users'); document.getElementById('statOnline').textContent = result.count || 0; document.getElementById('onlineCountLabel').textContent = `${result.count || 0} online`; renderOnline(result.data || [], 'onlineList'); renderOnline(result.data || [], 'overviewOnline', 4); } catch (error) { showToast(error.message, true); }
+        }
+        
+        function renderOnline(items, targetId, limit = null) {
+            const target = document.getElementById(targetId); const list = limit ? items.slice(0, limit) : items;
+            if (!list.length) { target.innerHTML = '<div class="text-sm text-slate-400 py-4">No members are online right now.</div>'; return; }
+            target.innerHTML = list.map(item => {
+                const imgUrl = photo(item.photo || item.profile_image || item.profileImage || item.profilePicture || item.avatar || item.image || item.cameraPhoto);
+                return `<div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center gap-3 shadow-sm cursor-pointer" onclick="openUser('${esc(item._id || item.userId)}')"><img src="${esc(imgUrl)}" class="w-11 h-11 rounded-xl object-cover bg-slate-100" onerror="this.src='https://via.placeholder.com/120x120?text=User'"><div class="min-w-0"><h4 class="font-black text-sm truncate">${esc(fullName(item))}</h4><p class="text-[11px] text-slate-500 truncate">${esc(item.occupation || 'Member')} · ${esc(item.district || 'Sri Lanka')}</p></div><span class="ml-auto flex items-center gap-1 text-[10px] text-emerald-600 font-black"><i class="fa-solid fa-circle text-[7px]"></i> LIVE</span></div>`;
+            }).join('');
+        }
+
+        async function loadUsers() {
+            const target = document.getElementById('usersTable'); target.innerHTML = '<tr><td colspan="5" class="p-5 text-slate-400">Loading accounts…</td></tr>';
+            const status = document.getElementById('userStatus').value; const search = encodeURIComponent(document.getElementById('userSearch').value.trim());
+            try { 
+                const result = await api(`/api/v1/admin/users?status=${status}&search=${search}`); 
+                target.innerHTML = (result.data || []).map(item => { 
+                    const uid = item._id || item.userId;
+                    const [label, cls] = statusLabel(item.is_verified_by_admin || item.approvalStatus); 
+                    return `<tr class="border-b last:border-0 hover:bg-slate-50">
+                        <td class="p-4"><button onclick="openUser('${esc(uid)}')" class="font-black text-slate-900 hover:text-rose-600 text-left">${esc(fullName(item))}</button><div class="text-[10px] text-slate-400 mt-1">${esc(item.occupation || 'Profile incomplete')}</div></td>
+                        <td class="p-4 text-slate-500">${esc(item.phone || '—')}</td>
+                        <td class="p-4 text-slate-500">${esc(item.district || '—')}</td>
+                        <td class="p-4"><span class="px-2 py-1 rounded-lg text-[10px] font-black ${cls}">${label}</span></td>
+                        <td class="p-4 text-right space-x-1">
+                            <button onclick="approveUser('${esc(uid)}')" class="px-2 py-1 bg-emerald-50 text-emerald-700 rounded text-[10px] font-bold" title="Approve"><i class="fa-solid fa-check"></i></button>
+                            <button onclick="rejectUser('${esc(uid)}')" class="px-2 py-1 bg-rose-50 text-rose-700 rounded text-[10px] font-bold" title="Reject"><i class="fa-solid fa-xmark"></i></button>
+                            <button onclick="blockUser('${esc(uid)}')" class="px-2 py-1 bg-slate-900 text-white rounded text-[10px] font-bold" title="Block"><i class="fa-solid fa-ban"></i></button>
+                            <button onclick="openUser('${esc(uid)}')" class="px-2 py-1 bg-slate-100 text-slate-700 rounded text-[10px] font-bold" title="View Full Profile"><i class="fa-solid fa-eye"></i></button>
+                        </td>
+                    </tr>`; 
+                }).join('') || '<tr><td colspan="5" class="p-5 text-slate-400">No accounts found.</td></tr>'; 
+            } catch (error) { target.innerHTML = `<tr><td colspan="5" class="p-5 text-rose-600">${esc(error.message)}</td></tr>`; }
+        }
+
+        async function loadActivity() {
+            const target = document.getElementById('activityTable'); target.innerHTML = '<tr><td colspan="4" class="p-5 text-slate-400">Loading activity…</td></tr>';
+            try { const result = await api('/api/v1/admin/activity'); target.innerHTML = (result.data || []).map(item => { const [label, cls] = statusLabel(item.approvalStatus || item.is_verified_by_admin); return `<tr class="border-b last:border-0"><td class="p-4"><div class="font-black">${esc(fullName(item))}</div><div class="text-[10px] text-slate-400">${esc(item.phone || '')}</div></td><td class="p-4 text-slate-500">${item.createdAt ? new Date(item.createdAt).toLocaleString() : '—'}</td><td class="p-4 text-slate-500">${esc(item.district || '—')}</td><td class="p-4"><span class="px-2 py-1 rounded-lg text-[10px] font-black ${cls}">${label}</span></td></tr>`; }).join('') || '<tr><td colspan="4" class="p-5 text-slate-400">No activity found.</td></tr>'; } catch (error) { target.innerHTML = `<tr><td colspan="4" class="p-5 text-rose-600">${esc(error.message)}</td></tr>`; }
+        }
+
+        async function openUser(id) {
+            const drawer = document.getElementById('userDrawer'); drawer.classList.remove('hidden'); document.getElementById('drawerContent').innerHTML = '<p class="text-slate-400">Loading complete account details & photos…</p>';
+            try { 
+                const result = await api(`/api/v1/admin/user-details/${encodeURIComponent(id)}`); 
+                const u = result.user || result.data || {}; 
+                const uid = u._id || u.userId || id;
+                const [label, cls] = statusLabel(u.is_verified_by_admin || u.approvalStatus); 
+                
+                let photosArr = [];
+                if (Array.isArray(u.photos)) photosArr = [...u.photos];
+                else if (Array.isArray(u.gallery)) photosArr = [...u.gallery];
+                else if (Array.isArray(u.images)) photosArr = [...u.images];
+
+                const singlePhotoFields = [
+                    u.public_photo, u.verification_selfie, u.photo, 
+                    u.profile_image, u.profileImage, u.profilePicture, 
+                    u.avatar, u.image, u.cameraPhoto, u.capturedPhoto, u.imageUrl
+                ];
+
+                singlePhotoFields.forEach(img => {
+                    if (img && typeof img === 'string' && !photosArr.includes(img)) {
+                        photosArr.unshift(img);
+                    }
+                });
+
+                if (photosArr.length === 0) {
+                    photosArr = ['https://via.placeholder.com/300x300?text=No+Photo+Available'];
+                }
+
+                const photosHtml = photosArr.map(p => `
+                    <div class="relative group aspect-square rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shadow-sm">
+                        <img src="${esc(photo(p))}" class="w-full h-full object-cover hover:scale-105 transition duration-300" onerror="this.src='https://via.placeholder.com/300x300?text=Image+Error'">
+                    </div>
+                `).join('');
+
+                document.getElementById('drawerContent').innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-widest text-rose-600 font-black">Account ID: #${esc(uid)}</p>
+                            <h2 class="text-2xl font-black mt-1">${esc(fullName(u))}</h2>
+                            <p class="text-sm text-slate-500 mt-1">${esc(u.occupation || 'Profile incomplete')} · ${esc(u.district || 'No district')}</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-black ${cls}">${label}</span>
+                    </div>
+
+                    <!-- Live Photos / Camera Photos & Gallery Section -->
+                    <div class="mt-5">
+                        <h4 class="text-xs font-black uppercase text-slate-500 tracking-wider mb-2">Live Photos, Camera & Gallery</h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">${photosHtml}</div>
+                    </div>
+
+                    <!-- All Details Grid -->
+                    <div class="mt-6">
+                        <h4 class="text-xs font-black uppercase text-slate-500 tracking-wider mb-2">Complete Profile Information</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            ${detail('WhatsApp / Phone', u.phone)}
+                            ${detail('Gender', u.gender)}
+                            ${detail('Age / DOB', u.age || u.date_of_birth)}
+                            ${detail('Religion', u.religion)}
+                            ${detail('Civil Status', u.civil_status || u.maritalStatus)}
+                            ${detail('Education', u.education)}
+                            ${detail('Smoking', u.smoking)}
+                            ${detail('Drinking', u.drinking)}
+                            ${detail('Food Preferences', u.food_preferences)}
+                            ${detail('Registered Date', u.created_at || u.createdAt ? new Date(u.created_at || u.createdAt).toLocaleString() : '—')}
+                        </div>
+                    </div>
+
+                    <!-- Connections / Partner Expectations -->
+                    <div class="mt-6">
+                        <h4 class="text-xs font-black uppercase text-slate-500 tracking-wider mb-2">Partner Expectations / Connections</h4>
+                        <div class="rounded-xl bg-slate-50 border p-4 text-xs space-y-2">
+                            <div><strong class="text-slate-700">Looking For:</strong> ${esc(u.partner_expectations || u.expectations || u.lookingFor || 'Not specified')}</div>
+                            <div><strong class="text-slate-700">Preferred Age Gap:</strong> ${esc(u.partner_age_range || 'Not specified')}</div>
+                            <div><strong class="text-slate-700">Preferred Religion/Caste:</strong> ${esc(u.partner_religion || 'Any')}</div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Profile Form Section -->
+                    <div class="mt-6 border-t pt-5">
+                        <h4 class="text-xs font-black uppercase text-rose-600 tracking-wider mb-3">Edit User Information</h4>
+                        <form id="editUserForm" onsubmit="updateUser(event, '${esc(uid)}')" class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold">First Name</label>
+                                <input type="text" id="editFirstName" value="${esc(u.firstName || u.first_name || '')}" class="w-full p-2 border rounded-xl text-xs bg-white">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold">Last Name</label>
+                                <input type="text" id="editLastName" value="${esc(u.lastName || u.last_name || '')}" class="w-full p-2 border rounded-xl text-xs bg-white">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold">Phone / WhatsApp</label>
+                                <input type="text" id="editPhone" value="${esc(u.phone || '')}" class="w-full p-2 border rounded-xl text-xs bg-white">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold">District</label>
+                                <input type="text" id="editDistrict" value="${esc(u.district || '')}" class="w-full p-2 border rounded-xl text-xs bg-white">
+                            </div>
+                            <div class="col-span-2">
+                                <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-950 text-white text-xs font-black hover:bg-slate-800">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Action Buttons: Accept / Reject / Block -->
+                    <div class="mt-6 flex gap-2 border-t pt-5">
+                        <button onclick="approveUser('${esc(uid)}')" class="flex-1 py-3 rounded-xl bg-emerald-600 text-white text-xs font-black hover:bg-emerald-700 shadow"><i class="fa-solid fa-check mr-1"></i> Accept</button>
+                        <button onclick="rejectUser('${esc(uid)}')" class="flex-1 py-3 rounded-xl bg-rose-50 text-rose-700 text-xs font-black hover:bg-rose-100 border border-rose-200"><i class="fa-solid fa-xmark mr-1"></i> Reject</button>
+                        <button onclick="blockUser('${esc(uid)}')" class="flex-1 py-3 rounded-xl bg-slate-900 text-white text-xs font-black hover:bg-slate-800"><i class="fa-solid fa-ban mr-1"></i> Block</button>
+                    </div>
+                `; 
+            } catch (error) { document.getElementById('drawerContent').innerHTML = `<p class="text-rose-600">${esc(error.message)}</p>`; }
+        }
+
+        async function updateUser(event, id) {
+            event.preventDefault();
+            const updatedData = {
+                firstName: document.getElementById('editFirstName').value,
+                lastName: document.getElementById('editLastName').value,
+                phone: document.getElementById('editPhone').value,
+                district: document.getElementById('editDistrict').value
+            };
+            try {
+                const res = await api(`/api/v1/admin/update-user/${id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(updatedData)
+                });
+                showToast(res.message || 'User profile updated successfully');
+                loadUsers();
+                refreshAll();
+            } catch (error) {
+                showToast(error.message, true);
+            }
+        }
+
+        const detail = (label, value) => `<div class="rounded-xl bg-slate-50 border border-slate-100 p-3"><div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">${label}</div><div class="text-xs font-bold text-slate-700 mt-1 break-words">${esc(value || 'Not provided')}</div></div>`;
+        
+        function closeDrawer(event) { 
+            if (!event || event.target === document.getElementById('userDrawer')) document.getElementById('userDrawer').classList.add('hidden'); 
+        }
+        
+        function showToast(message, error = false) { 
+            const toast = document.getElementById('toast'); toast.textContent = message; toast.className = `fixed bottom-5 right-5 z-50 px-4 py-3 rounded-xl text-xs font-bold shadow-xl ${error ? 'bg-rose-600 text-white' : 'bg-slate-950 text-white'}`; setTimeout(() => toast.classList.add('hidden'), 3500); 
+        }
+        
+        function logout() { 
+            localStorage.removeItem('token'); localStorage.removeItem('userToken'); localStorage.removeItem('role'); window.location.href = 'login.html'; 
+        }
+    </script>
+</body>
+</html>

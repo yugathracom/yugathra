@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Yugathra.lk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .romantic-gradient {
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fce7f3 100%);
+        }
+        .romantic-shadow {
+            box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.08), 0 8px 10px -6px rgba(225, 29, 72, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-rose-50/40 font-sans text-slate-800 min-h-screen">
+
+    <!-- Navigation Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-rose-100 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-rose-600 text-3xl font-black tracking-wider uppercase flex items-center gap-2">
+                <i class="fa-solid fa-heart-circle-check text-rose-500"></i> Yugathra<span class="text-slate-700">.lk</span>
+            </a>
+            
+            <div class="flex items-center gap-6">
+                <button class="relative text-slate-600 hover:text-rose-600 text-lg transition" onclick="switchTab('proposals')">
+                    <i class="fa-solid fa-bell"></i>
+                    <span id="proposalBadge" class="absolute -top-1.5 -right-2 bg-rose-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-md">0</span>
+                </button>
+                <div class="flex items-center gap-3 border-l border-rose-100 pl-6 cursor-pointer" onclick="switchTab('profile')">
+                    <div class="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-sm shadow-inner">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <span class="text-sm font-bold text-slate-700 hidden sm:inline" id="navUserName">My Account</span>
+                </div>
+                <button onclick="logout()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-4 py-2 rounded-xl transition border border-rose-200">
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="max-w-7xl mx-auto px-6 flex gap-8 text-sm font-bold border-t border-rose-100 pt-3">
+            <button onclick="switchTab('matches')" id="tab-matches" class="pb-3 text-rose-600 border-b-2 border-rose-600 flex items-center gap-2 transition">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Matches
+            </button>
+            <button onclick="switchTab('shortlist')" id="tab-shortlist" class="pb-3 text-slate-500 hover:text-rose-600 flex items-center gap-2 transition">
+                <i class="fa-solid fa-bookmark text-amber-500"></i> Shortlist
+            </button>
+            <button onclick="switchTab('proposals')" id="tab-proposals" class="pb-3 text-slate-500 hover:text-rose-600 flex items-center gap-2 transition">
+                <i class="fa-solid fa-heart text-rose-500"></i> Proposals / Requests
+            </button>
+            <button onclick="switchTab('sent-requests')" id="tab-sent-requests" class="pb-3 text-slate-500 hover:text-rose-600 flex items-center gap-2 transition">
+                <i class="fa-solid fa-paper-plane text-sky-500"></i> Sent Requests
+            </button>
+            <button onclick="switchTab('profile')" id="tab-profile" class="pb-3 text-slate-500 hover:text-rose-600 flex items-center gap-2 transition">
+                <i class="fa-solid fa-user-gear"></i> Profile & Privacy
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+
+        <!-- TAB 1: MATCHING ENGINE & SEARCH FILTERS -->
+        <div id="view-matches" class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- FILTER SIDEBAR -->
+            <aside class="lg:col-span-1 bg-white/90 backdrop-blur-md border border-rose-100 rounded-3xl p-6 romantic-shadow h-fit">
+                <h2 class="text-base font-bold text-slate-900 border-b border-rose-100 pb-3 mb-5 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-rose-600"></i> Search Filters
+                </h2>
+
+                <div class="space-y-5 text-xs">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1.5">Looking For</label>
+                        <select id="filterGender" class="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-3.5 py-3 font-semibold text-slate-700 focus:outline-none focus:border-rose-500">
+                            <option value="All">All Profiles</option>
+                            <option value="Female">Bride (මනාලියන්)</option>
+                            <option value="Male">Groom (මනාලයන්)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1.5">Age Range (වයස් සීමාව)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="filterMinAge" placeholder="Min (18)" min="18" max="100" class="w-1/2 bg-rose-50/50 border border-rose-200 rounded-xl px-3.5 py-3 font-semibold text-center focus:outline-none focus:border-rose-500">
+                            <span class="text-slate-400 font-bold">-</span>
+                            <input type="number" id="filterMaxAge" placeholder="Max (60)" min="18" max="100" class="w-1/2 bg-rose-50/50 border border-rose-200 rounded-xl px-3.5 py-3 font-semibold text-center focus:outline-none focus:border-rose-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1.5">Profession (වෘත්තිය)</label>
+                        <input type="text" id="filterOccupation" placeholder="Ex: Engineer, Doctor, Teacher..." class="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-3.5 py-3 font-semibold text-slate-700 focus:outline-none focus:border-rose-500">
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1.5">District (දිස්ත්‍රික්කය)</label>
+                        <select id="filterDistrict" class="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-3.5 py-3 font-semibold text-slate-700 focus:outline-none focus:border-rose-500">
+                            <option value="All">All Districts (සියලුම දිස්ත්‍රික්ක)</option>
+                            <option value="Colombo">Colombo</option>
+                            <option value="Gampaha">Gampaha</option>
+                            <option value="Kandy">Kandy</option>
+                            <option value="Galle">Galle</option>
+                            <option value="Kurunegala">Kurunegala</option>
+                            <option value="Ratnapura">Ratnapura</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1.5">Religion</label>
+                        <select id="filterReligion" class="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-3.5 py-3 font-semibold text-slate-700 focus:outline-none focus:border-rose-500">
+                            <option value="All">All Religions</option>
+                            <option value="Buddhist">Buddhist</option>
+                            <option value="Hindu">Hindu</option>
+                            <option value="Islam">Islam</option>
+                            <option value="Christian">Christian</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-3 space-y-2.5">
+                        <button onclick="applyFilters()" class="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-bold py-3 rounded-xl hover:from-rose-600 hover:to-rose-700 transition shadow-md shadow-rose-200">
+                            Apply Filters
+                        </button>
+                        <button onclick="resetFilters()" class="w-full bg-rose-50 text-rose-600 font-bold py-2.5 rounded-xl hover:bg-rose-100 transition">
+                            Reset Filters
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- PROFILES CONTAINER -->
+            <section class="lg:col-span-3 space-y-6">
+                <div class="flex justify-between items-center bg-white/90 backdrop-blur-md border border-rose-100 rounded-3xl p-5 romantic-shadow">
+                    <h1 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-sparkles text-rose-500"></i> Matches for You (<span id="profileCount" class="text-rose-600">0</span>)
+                    </h1>
+                    <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1.5 rounded-full font-bold flex items-center gap-1.5">
+                        <i class="fa-solid fa-shield-check"></i> Verified Members
+                    </span>
+                </div>
+
+                <div id="profilesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div class="col-span-full text-center py-16 text-slate-400">
+                        <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-rose-400"></i>
+                        <p class="text-sm font-semibold">Profiles loading...</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- TAB 2: SHORTLIST / FAVORITES -->
+        <div id="view-shortlist" class="hidden space-y-6">
+            <div class="bg-white/90 backdrop-blur-md border border-rose-100 rounded-3xl p-6 romantic-shadow">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-bookmark text-amber-500"></i> Shortlisted Profiles</h2>
+            </div>
+            <div id="shortlistGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <p class="text-xs text-slate-400 col-span-3 p-6 text-center">No profiles shortlisted yet.</p>
+            </div>
+        </div>
+
+        <!-- TAB 3: PROPOSALS / INTEREST REQUESTS -->
+        <div id="view-proposals" class="hidden space-y-6 max-w-5xl mx-auto">
+            <div class="bg-white/90 backdrop-blur-md border border-rose-100 rounded-3xl p-6 romantic-shadow">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-heart text-rose-500"></i> Received Proposals</h2>
+            </div>
+            <div id="proposalsList" class="space-y-4">
+                <p class="text-xs text-slate-400 p-6 text-center bg-white/50 rounded-3xl border border-rose-100">No proposals received.</p>
+            </div>
+        </div>
+
+        <!-- TAB 4: SENT REQUESTS -->
+        <div id="view-sent-requests" class="hidden space-y-6 max-w-5xl mx-auto">
+            <div class="bg-white/90 backdrop-blur-md border border-rose-100 rounded-3xl p-6 romantic-shadow">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-paper-plane text-sky-500"></i> Sent Requests</h2>
+                <p class="text-xs text-slate-500 mt-2">Track requests you have sent and open the recipient's public profile.</p>
+            </div>
+            <div id="sentRequestsList" class="space-y-4">
+                <p class="text-xs text-slate-400 p-6 text-center bg-white/50 rounded-3xl border border-rose-100">No sent requests yet.</p>
+            </div>
+        </div>
+
+        <!-- TAB 4: PROFILE EDITING & PRIVACY SETTINGS -->
+        <div id="view-profile" class="hidden max-w-2xl mx-auto bg-white/90 backdrop-blur-md border border-rose-100 rounded-3xl p-8 romantic-shadow">
+            <h2 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-user-gear text-rose-500"></i> Profile Details & Privacy Settings
+            </h2>
+        <form onsubmit="updateProfile(event)" class="space-y-5 text-xs">
+                <div class="bg-rose-50/70 border border-rose-200 rounded-2xl p-4 text-slate-600 leading-relaxed">
+                    <i class="fa-solid fa-lock text-rose-500 mr-1"></i>
+                    Only the phone number is shared after a proposal is accepted. Other profile details are visible before acceptance.
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-2">Age</label>
+                    <input type="number" id="editAge" min="18" max="100" class="w-full p-3.5 border border-rose-200 rounded-xl bg-rose-50/30 font-semibold focus:outline-none focus:border-rose-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-2">Occupation</label>
+                    <input type="text" id="editOccupation" class="w-full p-3.5 border border-rose-200 rounded-xl bg-rose-50/30 font-semibold focus:outline-none focus:border-rose-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-2">District</label>
+                    <input type="text" id="editDistrict" class="w-full p-3.5 border border-rose-200 rounded-xl bg-rose-50/30 font-semibold focus:outline-none focus:border-rose-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-2">Caste</label>
+                    <input type="text" id="editCaste" class="w-full p-3.5 border border-rose-200 rounded-xl bg-rose-50/30 font-semibold focus:outline-none focus:border-rose-500">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-2">Drinking</label>
+                        <select id="editDrinking" class="w-full p-3.5 border border-rose-200 rounded-xl bg-rose-50/30 font-semibold focus:outline-none focus:border-rose-500">
+                            <option value="">Prefer not to say</option>
+                            <option value="No">No</option>
+                            <option value="Occasionally">Occasionally</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-2">Smoking</label>
+                        <select id="editSmoking" class="w-full p-3.5 border border-rose-200 rounded-xl bg-rose-50/30 font-semibold focus:outline-none focus:border-rose-500">
+                            <option value="">Prefer not to say</option>
+                            <option value="No">No</option>
+                            <option value="Occasionally">Occasionally</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-2">Food Preferences</label>
+                    <input type="text" id="editFoodPreferences" placeholder="Vegetarian, halal, no restrictions..." class="w-full p-3.5 border border-rose-200 rounded-xl bg-rose-50/30 font-semibold focus:outline-none focus:border-rose-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-2">Soulmate Preferences</label>
+                    <textarea id="editPartnerPreferences" rows="3" placeholder="What are you looking for in a partner?" class="w-full p-3.5 border border-rose-200 rounded-xl bg-rose-50/30 font-semibold focus:outline-none focus:border-rose-500"></textarea>
+                </div>
+
+                <!-- Photo Privacy Switch -->
+                <div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-200 flex justify-between items-center mt-6">
+                    <div>
+                        <span class="font-bold text-slate-900 block text-sm">Photo Privacy</span>
+                        <span class="text-slate-500 text-xs">When private, only accepted requests can view your photo.</span>
+                    </div>
+                    <select id="editPhotoPrivacy" class="p-2.5 border border-rose-200 rounded-xl font-bold text-slate-700 bg-white">
+                        <option value="public">Public</option>
+                        <option value="private">Private (Request Only)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-bold py-3.5 rounded-xl transition shadow-md shadow-rose-200 mt-4">
+                    Save Details
+                </button>
+            </form>
+        </div>
+
+    </main>
+
+    <!-- FULL PROFILE MODAL (LARGER & ROMANTIC) -->
+    <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-8 shadow-2xl relative text-xs border border-rose-100">
+            <button onclick="closeProfileModal()" class="w-9 h-9 rounded-full bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center absolute top-6 right-6 font-bold text-sm transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-heart text-rose-500"></i> Full Profile Details
+            </h3>
+            <div id="modalProfileContent" class="space-y-4">
+                <p class="text-slate-400">Loading details...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- YUGATHRA AI ASSISTANT -->
+    <div id="aiChatPanel" class="hidden fixed bottom-24 right-5 z-50 w-[min(380px,calc(100vw-2rem))] bg-white border border-rose-200 rounded-3xl shadow-2xl overflow-hidden">
+        <div class="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-5 py-4 flex items-center justify-between">
+            <div>
+                <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-sparkles"></i> Yugathra Assistant</h3>
+                <p class="text-[11px] text-rose-100">Profile, privacy, and proposal help</p>
+            </div>
+            <button onclick="toggleAIChat()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25" aria-label="Close chat">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="aiChatMessages" class="h-80 overflow-y-auto p-4 space-y-3 bg-rose-50/30">
+            <div class="flex justify-start">
+                <div class="max-w-[85%] rounded-2xl rounded-tl-sm bg-white border border-rose-100 px-3.5 py-2.5 text-xs text-slate-700 shadow-sm">
+                    Hi! I can help you complete your profile, understand privacy, use filters, or manage proposals.
+                </div>
+            </div>
+        </div>
+        <form onsubmit="sendAIChatMessage(event)" class="p-3 border-t border-rose-100 bg-white flex gap-2">
+            <input id="aiChatInput" autocomplete="off" maxlength="2000" placeholder="Ask Yugathra Assistant..." class="min-w-0 flex-1 px-3.5 py-3 rounded-xl border border-rose-200 bg-rose-50/30 text-xs focus:outline-none focus:border-rose-500">
+            <button id="aiChatSend" type="submit" class="w-11 rounded-xl bg-rose-600 hover:bg-rose-700 text-white" aria-label="Send message">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+    <button onclick="toggleAIChat()" class="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-xl hover:scale-105 transition" aria-label="Open Yugathra Assistant">
+        <i class="fa-solid fa-comment-dots text-xl"></i>
+    </button>
+
+    <script>
+        const API_BASE_URL = window.API_BASE_URL || (
+            window.location.protocol === 'file:'
+                ? 'http://localhost:5000'
+                : window.location.origin
+        );
+        let allFetchedProfiles = [];
+        let currentUser = null;
+        // Support both userToken and token keys from local storage
+        const token = localStorage.getItem('userToken') || localStorage.getItem('token');
+        let socket;
+
+        const escapeHtml = (value) => String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+        const safeUrl = (value, fallback) => {
+            if (!value) return fallback;
+            if (/^data:image\//i.test(String(value))) return String(value);
+            try {
+                const url = new URL(String(value || ''), window.location.href);
+                return ['http:', 'https:'].includes(url.protocol) ? url.href : fallback;
+            } catch {
+                return fallback;
+            }
+        };
+
+        const safeArg = (value) => encodeURIComponent(String(value ?? ''));
+        const decodeArg = (value) => {
+            try { return decodeURIComponent(value); } catch { return value; }
+        };
+        const pick = (object, ...keys) => {
+            for (const key of keys) {
+                if (object && object[key] !== undefined && object[key] !== null && String(object[key]).trim() !== '') {
+                    return object[key];
+                }
+            }
+            return 'Not provided';
+        };
+
+        let aiChatHistory = [];
+
+        function toggleAIChat() {
+            const panel = document.getElementById('aiChatPanel');
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) {
+                document.getElementById('aiChatInput').focus();
+            }
+        }
+
+        function appendAIChatMessage(role, content) {
+            const messages = document.getElementById('aiChatMessages');
+            const isUser = role === 'user';
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+            const bubble = document.createElement('div');
+            bubble.className = isUser
+                ? 'max-w-[85%] rounded-2xl rounded-tr-sm bg-rose-600 text-white px-3.5 py-2.5 text-xs shadow-sm'
+                : 'max-w-[85%] rounded-2xl rounded-tl-sm bg-white border border-rose-100 px-3.5 py-2.5 text-xs text-slate-700 shadow-sm';
+            bubble.textContent = content;
+            wrapper.appendChild(bubble);
+            messages.appendChild(wrapper);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        async function sendAIChatMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('aiChatInput');
+            const sendButton = document.getElementById('aiChatSend');
+            const message = input.value.trim();
+            if (!message) return;
+
+            appendAIChatMessage('user', message);
+            aiChatHistory.push({ role: 'user', content: message });
+            input.value = '';
+            input.disabled = true;
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/ai/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ message, history: aiChatHistory.slice(-10) })
+                });
+                const data = await res.json();
+                const reply = data.success
+                    ? data.reply
+                    : (data.message || 'The assistant is temporarily unavailable.');
+                appendAIChatMessage('assistant', reply);
+                aiChatHistory.push({ role: 'assistant', content: reply });
+            } catch (error) {
+                appendAIChatMessage('assistant', 'I could not connect right now. Please try again.');
+            } finally {
+                input.disabled = false;
+                sendButton.disabled = false;
+                sendButton.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+                input.focus();
+            }
+        }
+        const isAccepted = (status) => String(status || '').toLowerCase() === 'accepted';
+        const isOtherGender = (targetGender) => {
+            const mine = String(currentUser?.gender || '').trim().toLowerCase();
+            const theirs = String(targetGender || '').trim().toLowerCase();
+            return !mine || !theirs || mine !== theirs;
+        };
+
+        function loadSocketIo() {
+            return new Promise(resolve => {
+                if (typeof io === 'function') return resolve(true);
+                const script = document.createElement('script');
+                script.src = `${API_BASE_URL}/socket.io/socket.io.js`;
+                script.onload = () => resolve(typeof io === 'function');
+                script.onerror = () => resolve(false);
+                document.head.appendChild(script);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!token) {
+                console.warn('No auth token found.');
+                alert('Please login first to access dashboard.');
+                window.location.href = 'login.html';
+                return;
+            }
+            checkUserStatusAndLoad();
+        });
+
+        async function checkUserStatusAndLoad() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/v1/user/my-profile`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.status === 401 || res.status === 403) {
+                    localStorage.removeItem('userToken');
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const data = await res.json();
+
+                if (!data.success) {
+                    localStorage.removeItem('userToken');
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (data.user.status !== 'Approved') {
+                    document.body.innerHTML = `
+                        <div class="min-h-screen flex items-center justify-center romantic-gradient p-4">
+                            <div class="bg-white p-10 rounded-3xl shadow-xl text-center max-w-md border border-rose-100">
+                                <i class="fa-solid fa-clock-rotate-left text-rose-500 text-5xl mb-4"></i>
+                                <h2 class="text-xl font-bold text-slate-800 mb-2">Account Pending Approval</h2>
+                                <p class="text-xs text-slate-600 mb-6 leading-relaxed">Your account is currently under review by the Admin. You will be able to view other profiles once approved.</p>
+                                <button onclick="logout()" class="bg-rose-600 text-white font-bold text-xs px-6 py-3 rounded-xl shadow-md">Logout</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                currentUser = data.user;
+                populateProfileForm(currentUser);
+                if (await loadSocketIo()) initSocket(data.user.id);
+
+                if (data.user.name) {
+                    document.getElementById('navUserName').textContent = data.user.name;
+                }
+                fetchProfiles();
+                loadShortlist();
+                loadProposals();
+                loadSentRequests();
+
+            } catch (err) {
+                console.error('Status check error:', err);
+            }
+        }
+
+        function initSocket(userId) {
+            if (typeof io !== 'function') return;
+            socket = io(API_BASE_URL);
+            socket.emit('user_connected', userId);
+
+            socket.on('user_status_change', ({ userId: statusUserId, isOnline }) => {
+                const targetProfile = allFetchedProfiles.find(p => String(p.userId) === String(statusUserId));
+                if (targetProfile) {
+                    targetProfile.isOnline = isOnline;
+                    renderProfiles(allFetchedProfiles);
+                }
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem('userToken');
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        }
+
+        function switchTab(tabName) {
+            ['matches', 'shortlist', 'proposals', 'sent-requests', 'profile'].forEach(tab => {
+                document.getElementById(`view-${tab}`).classList.add('hidden');
+                const tabBtn = document.getElementById(`tab-${tab}`);
+                tabBtn.classList.remove('text-rose-600', 'border-b-2', 'border-rose-600');
+                tabBtn.classList.add('text-slate-500');
+            });
+
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            activeBtn.classList.add('text-rose-600', 'border-b-2', 'border-rose-600');
+            activeBtn.classList.remove('text-slate-500');
+        }
+
+        async function fetchProfiles() {
+            const grid = document.getElementById('profilesGrid');
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/profiles/matches`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    allFetchedProfiles = data.profiles || [];
+                    renderProfiles(allFetchedProfiles);
+                } else {
+                    grid.innerHTML = `<div class="col-span-full text-center py-12 text-rose-500 font-bold text-xs">${escapeHtml(data.message || 'Profiles could not be loaded.')}</div>`;
+                }
+            } catch (err) {
+                console.error('Fetch Error:', err);
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-rose-500 font-bold text-xs">Could not connect to server.</div>`;
+            }
+        }
+
+        function renderProfiles(list) {
+            const grid = document.getElementById('profilesGrid');
+            document.getElementById('profileCount').textContent = list.length;
+            grid.innerHTML = '';
+
+            if (list.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-16 text-slate-500 font-bold text-xs bg-white/70 rounded-3xl border border-rose-100">No matching profiles found.</div>`;
+                return;
+            }
+
+            const defaultAvatar = "https://via.placeholder.com/400x400?text=No+Photo";
+            const privateAvatar = "https://via.placeholder.com/400x400?text=Private+Photo";
+
+            list.forEach(p => {
+                let photoUrl = safeUrl(p.photo, defaultAvatar);
+                if (p.photoPrivacy === 'private') photoUrl = privateAvatar;
+
+                const statusBadge = p.isOnline 
+                    ? `<span class="bg-emerald-500/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm"><i class="fa-solid fa-circle text-[7px] mr-1"></i>Online</span>`
+                    : `<span class="bg-slate-500/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm"><i class="fa-regular fa-circle text-[7px] mr-1"></i>Offline</span>`;
+
+                const card = `
+                    <div onclick="viewFullProfileModal('${safeArg(p.userId)}', 'pending')" role="button" tabindex="0" class="bg-white border border-rose-100 rounded-3xl overflow-hidden romantic-shadow hover:-translate-y-1 transition duration-300 flex flex-col cursor-pointer">
+                        <div class="h-56 bg-rose-50 relative group">
+                            <img src="${escapeHtml(photoUrl)}" class="w-full h-full object-cover" alt="Profile photo">
+                            <div class="absolute top-3.5 left-3.5 flex items-center gap-1.5">
+                                ${statusBadge}
+                            </div>
+                            <span class="absolute top-3.5 right-3.5 bg-white/95 backdrop-blur-sm text-slate-800 text-[11px] font-bold px-3 py-1.5 rounded-full shadow-sm">
+                                 📍 ${escapeHtml(p.district || 'N/A')}
+                            </span>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                            <div>
+                                 <h3 class="font-bold text-slate-900 text-base">${escapeHtml(p.name || 'Anonymous')}</h3>
+                                 <p class="text-xs text-rose-600 font-bold mt-0.5">${escapeHtml(p.occupation || 'N/A')}</p>
+                                 <div class="text-[11px] text-slate-600 mt-2 bg-rose-50/50 px-2.5 py-2 rounded-lg space-y-1">
+                                     <p><b>Age:</b> ${escapeHtml(p.age || 'Not provided')} · <b>Caste:</b> ${escapeHtml(p.caste || 'Not provided')}</p>
+                                     <p><b>Drinking:</b> ${escapeHtml(p.drinking || p.drinking_habit || 'Not provided')} · <b>Smoking:</b> ${escapeHtml(p.smoking || p.smoking_habit || 'Not provided')}</p>
+                                     <p><b>Religion:</b> ${escapeHtml(p.religion || 'Not provided')}</p>
+                                     <p><b>Food preferences:</b> ${escapeHtml(p.food_preferences || p.food_preference || 'Not provided')}</p>
+                                     <p><b>Soulmate preferences:</b> ${escapeHtml(p.soulmate_preferences || p.partner_preferences || 'Not provided')}</p>
+                                 </div>
+                            </div>
+                            <div class="flex gap-2.5 pt-2 border-t border-rose-50">
+                                 <button onclick="event.stopPropagation(); viewFullProfileModal('${safeArg(p.userId)}', 'pending')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-3.5 py-3 rounded-2xl transition" title="View profile">
+                                     <i class="fa-solid fa-eye"></i> View Profile
+                                 </button>
+                                 <button onclick="event.stopPropagation(); sendInterest('${safeArg(p.userId)}', '${safeArg(p.gender)}')" class="flex-1 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-bold text-xs py-3 rounded-2xl transition shadow-sm flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-heart"></i> Express Interest
+                                </button>
+                                 <button onclick="event.stopPropagation(); toggleShortlist('${safeArg(p.userId)}')" class="${p.isShortlisted ? 'bg-amber-500 text-white' : 'bg-amber-50 text-amber-600 border border-amber-200'} hover:bg-amber-500 hover:text-white font-bold px-3.5 py-3 rounded-2xl transition">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        async function toggleShortlist(targetUserId) {
+            targetUserId = decodeArg(targetUserId);
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/shortlist/toggle`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ targetUserId })
+                });
+                const data = await res.json();
+                alert(data.message);
+                fetchProfiles();
+                loadShortlist();
+            } catch (err) { alert('Shortlist action failed.'); }
+        }
+
+        async function loadShortlist() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/shortlist/my-list`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+                const container = document.getElementById('shortlistGrid');
+
+                if (result.success && result.shortlists.length > 0) {
+                    container.innerHTML = result.shortlists.map(u => `
+                        <div class="p-4 border border-rose-100 rounded-2xl bg-white shadow-sm flex justify-between items-center text-xs">
+                            <div>
+                            <h4 class="font-bold text-slate-900 text-sm">${escapeHtml(u.name || 'Anonymous')}</h4>
+                            <p class="text-slate-500 mt-0.5">📍 ${escapeHtml(u.district || 'N/A')} • 💼 ${escapeHtml(u.occupation || 'N/A')}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="viewFullProfileModal('${safeArg(u.userId)}', 'pending')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 text-[11px] font-bold px-3 py-2 rounded-xl shadow-sm" title="View profile">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button onclick="sendInterest('${safeArg(u.userId)}', '${safeArg(u.gender)}')" class="bg-rose-600 text-white text-[11px] font-bold px-3 py-2 rounded-xl shadow-sm">Send Proposal</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `<p class="text-xs text-slate-400 col-span-3 text-center p-6 bg-white/70 rounded-3xl border border-rose-100">No profiles shortlisted yet.</p>`;
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function sendInterest(receiverUserId, receiverGender) {
+            receiverUserId = decodeArg(receiverUserId);
+            receiverGender = decodeArg(receiverGender);
+            if (!isOtherGender(receiverGender)) {
+                alert('You can only send a request to a profile of the other gender.');
+                return;
+            }
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/proposals/send`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ receiverUserId })
+                });
+                const data = await res.json();
+                alert(data.message || `Interest sent successfully!`);
+                loadSentRequests();
+            } catch (err) { alert('Proposal request failed.'); }
+        }
+
+        async function loadProposals() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/proposals/received`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+                const container = document.getElementById('proposalsList');
+
+                if (result.success && result.data.length > 0) {
+                    document.getElementById('proposalBadge').textContent = result.data.length;
+                    container.innerHTML = result.data.map(p => {
+                        const avatar = safeUrl(p.public_photo, 'https://via.placeholder.com/150?text=No+Photo');
+                        const accepted = isAccepted(p.status);
+                        return `
+                        <div class="p-6 border border-rose-100 rounded-3xl bg-white romantic-shadow flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-xs">
+                            <div class="flex items-start gap-4">
+                                 <img src="${escapeHtml(avatar)}" class="w-16 h-16 rounded-full object-cover border-2 border-rose-200 shadow-sm" alt="Profile photo">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2.5">
+                                         <span class="font-bold text-slate-900 text-base">${escapeHtml(p.sender_name || 'Anonymous')}</span>
+                                        ${p.isOnline ? `<span class="bg-emerald-100 text-emerald-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold">🟢 Online</span>` : `<span class="bg-slate-100 text-slate-600 text-[10px] px-2.5 py-0.5 rounded-full font-bold">⚪ Offline</span>`}
+                                    </div>
+                                     <p class="text-slate-500 text-xs">📍 ${escapeHtml(p.sender_district || 'N/A')} • 💼 ${escapeHtml(p.sender_occupation || 'N/A')}</p>
+                                     <div class="mt-2 p-3 rounded-xl bg-rose-50/70 border border-rose-100 text-slate-600 space-y-1">
+                                         <p><b>Age:</b> ${escapeHtml(p.age || p.sender_age || 'Not provided')}</p>
+                                         <p><b>Caste:</b> ${escapeHtml(p.caste || 'Not provided')}</p>
+                                         <p><b>Drinking / Smoking:</b> ${escapeHtml(p.drinking || p.drinking_habit || 'Not provided')} / ${escapeHtml(p.smoking || p.smoking_habit || 'Not provided')}</p>
+                                         <p><b>Religion:</b> ${escapeHtml(p.religion || 'Not provided')}</p>
+                                         <p><b>Food preferences:</b> ${escapeHtml(p.food_preferences || p.food_preference || 'Not provided')}</p>
+                                         <p><b>Soulmate preferences:</b> ${escapeHtml(p.soulmate_preferences || p.partner_preferences || 'Not provided')}</p>
+                                     </div>
+                                     ${accepted ? `
+                                         <div class="mt-2 p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-slate-600 space-y-1">
+                                             <p><b>Phone:</b> ${escapeHtml(p.sender_phone || 'Not provided')}</p>
+                                         </div>
+                                     ` : `<p class="text-slate-500 text-xs mt-2 bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl"><i class="fa-solid fa-lock mr-1"></i> Phone number is hidden until this request is accepted.</p>`}
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2.5 self-end md:self-center">
+                                 <button onclick="viewFullProfileModal('${safeArg(p.sender_id)}', '${safeArg(p.status)}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-eye"></i> View Profile
+                                </button>
+                                ${p.status === 'pending' ? `
+                                    <button onclick="acceptProposal('${safeArg(p.sender_id)}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                                        <i class="fa-solid fa-check"></i> Accept
+                                    </button>
+                                    <button onclick="rejectProposal('${safeArg(p.sender_id)}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
+                                        <i class="fa-solid fa-xmark"></i> Ignore
+                                    </button>
+                                ` : p.status === 'accepted' ? `
+                                    <span class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full font-bold">Accepted</span>
+                                ` : `
+                                    <span class="bg-rose-100 text-rose-700 px-4 py-2 rounded-full font-bold">Rejected</span>
+                                `}
+                            </div>
+                        </div>
+                        `;
+                    }).join('');
+                } else {
+                    document.getElementById('proposalBadge').textContent = '0';
+                    container.innerHTML = `<p class="text-xs text-slate-400 p-6 text-center bg-white/70 rounded-3xl border border-rose-100">No proposals received.</p>`;
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadSentRequests() {
+            const container = document.getElementById('sentRequestsList');
+            if (!container) return;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/proposals/sent`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+                const requests = Array.isArray(result.data) ? result.data : [];
+
+                if (result.success && requests.length > 0) {
+                    container.innerHTML = requests.map(p => {
+                        const accepted = isAccepted(p.status);
+                        const targetId = p.receiver_id || p.receiverUserId || p.recipient_id || p.target_id || p.user_id;
+                        const targetName = p.receiver_name || p.recipient_name || p.target_name || p.name || 'Anonymous';
+                        const targetPhoto = safeUrl(p.receiver_photo || p.recipient_photo || p.public_photo, 'https://via.placeholder.com/150?text=No+Photo');
+                        const statusText = String(p.status || 'pending').toLowerCase();
+                        const statusBadge = accepted
+                            ? '<span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-bold">Accepted</span>'
+                            : statusText === 'rejected'
+                                ? '<span class="bg-rose-100 text-rose-700 px-3 py-1 rounded-full font-bold">Rejected</span>'
+                                : '<span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-bold">Pending</span>';
+
+                        return `
+                            <div class="p-6 border border-rose-100 rounded-3xl bg-white romantic-shadow flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-xs">
+                                <div class="flex items-start gap-4">
+                                    <img src="${escapeHtml(targetPhoto)}" class="w-16 h-16 rounded-full object-cover border-2 border-rose-200 shadow-sm" alt="Profile photo">
+                                    <div class="space-y-1">
+                                        <div class="flex items-center gap-2.5">
+                                            <span class="font-bold text-slate-900 text-base">${escapeHtml(targetName)}</span>
+                                            ${statusBadge}
+                                        </div>
+                                        <p class="text-slate-500">📍 ${escapeHtml(p.receiver_district || p.recipient_district || p.district || 'N/A')} • 💼 ${escapeHtml(p.receiver_occupation || p.recipient_occupation || p.occupation || 'N/A')}</p>
+                                        <p class="text-slate-600 mt-2"><b>Age:</b> ${escapeHtml(p.age || p.receiver_age || 'Not provided')} · <b>Caste:</b> ${escapeHtml(p.caste || 'Not provided')}</p>
+                                        <p class="text-slate-600"><b>Religion:</b> ${escapeHtml(p.religion || 'Not provided')} · <b>Food:</b> ${escapeHtml(p.food_preferences || p.food_preference || 'Not provided')}</p>
+                                        <p class="text-slate-600"><b>Soulmate preferences:</b> ${escapeHtml(p.soulmate_preferences || p.partner_preferences || 'Not provided')}</p>
+                                        ${accepted
+                                            ? `<p class="text-emerald-600 font-bold mt-2 bg-emerald-50 px-3 py-1.5 rounded-xl w-fit"><i class="fa-solid fa-phone mr-1"></i> Phone: ${escapeHtml(p.receiver_phone || p.recipient_phone || p.phone || 'Not provided')}</p>`
+                                            : `<p class="text-slate-500 mt-2"><i class="fa-regular fa-clock mr-1"></i> Waiting for this request to be accepted.</p>`}
+                                    </div>
+                                </div>
+                                <button onclick="viewFullProfileModal('${safeArg(targetId)}', '${safeArg(p.status || 'pending')}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 self-end md:self-center">
+                                    <i class="fa-solid fa-eye"></i> View Profile
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = `<p class="text-xs text-slate-400 p-6 text-center bg-white/70 rounded-3xl border border-rose-100">No sent requests yet.</p>`;
+                }
+            } catch (err) {
+                console.error('Sent requests error:', err);
+                container.innerHTML = `<p class="text-xs text-slate-500 p-6 text-center bg-white/70 rounded-3xl border border-rose-100">Sent requests are not available yet.</p>`;
+            }
+        }
+
+        async function acceptProposal(senderUserId) {
+            senderUserId = decodeArg(senderUserId);
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/proposals/accept`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ senderUserId })
+                });
+                const data = await res.json();
+                alert(data.message);
+                loadProposals();
+            } catch (err) { alert('Accept action failed.'); }
+        }
+
+        async function rejectProposal(senderUserId) {
+            senderUserId = decodeArg(senderUserId);
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/proposals/reject`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ senderUserId })
+                });
+                const data = await res.json();
+                alert(data.message || 'Proposal ignored/rejected');
+                loadProposals();
+            } catch (err) { alert('Reject action failed.'); }
+        }
+
+        async function viewFullProfileModal(targetId, relationshipStatus = 'pending') {
+            targetId = decodeArg(targetId);
+            const modal = document.getElementById('profileModal');
+            const content = document.getElementById('modalProfileContent');
+            modal.classList.remove('hidden');
+            content.innerHTML = `<p class="text-slate-400 text-center py-8">Loading details...</p>`;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/profiles/details/${targetId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (data.success && data.profile) {
+                    const p = data.profile;
+                    const canViewSensitive = isAccepted(relationshipStatus);
+                    const publicDetails = `
+                        <div class="pt-3 border-t border-rose-100 mt-3">
+                            <b class="block text-slate-900 mb-2"><i class="fa-solid fa-eye text-rose-500 mr-1"></i> Visible profile details</b>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-slate-700 bg-rose-50/30 p-5 rounded-2xl border border-rose-100">
+                                <div><b>Age:</b> ${escapeHtml(pick(p, 'age', 'sender_age'))}</div>
+                                <div><b>Caste:</b> ${escapeHtml(pick(p, 'caste'))}</div>
+                                <div><b>Drinking:</b> ${escapeHtml(pick(p, 'drinking', 'drinking_habit'))}</div>
+                                <div><b>Smoking:</b> ${escapeHtml(pick(p, 'smoking', 'smoking_habit'))}</div>
+                                <div><b>Religion:</b> ${escapeHtml(pick(p, 'religion'))}</div>
+                                <div><b>Food preferences:</b> ${escapeHtml(pick(p, 'food_preferences', 'food_preference'))}</div>
+                                <div class="sm:col-span-2"><b>Soulmate preferences:</b> ${escapeHtml(pick(p, 'soulmate_preferences', 'partner_preferences', 'partner_preference'))}</div>
+                            </div>
+                        </div>
+                    `;
+                    const sensitiveDetails = canViewSensitive ? `
+                        <div class="pt-3 border-t border-rose-100 mt-3">
+                            <b class="block text-slate-900 mb-2"><i class="fa-solid fa-lock-open text-emerald-600 mr-1"></i> Shared after acceptance</b>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-slate-700 bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100">
+                                <div><b>Phone:</b> ${escapeHtml(pick(p, 'phone', 'sender_phone'))}</div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="pt-3 border-t border-rose-100 mt-3">
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl text-slate-600">
+                                <i class="fa-solid fa-lock text-slate-500 mr-1"></i>
+                                Phone number becomes visible only after this proposal is accepted.
+                            </div>
+                        </div>
+                    `;
+                    content.innerHTML = `
+                        <div class="flex items-center gap-5 border-b border-rose-100 pb-5">
+                            <img src="${escapeHtml(safeUrl(p.public_photo, 'https://via.placeholder.com/150'))}" class="w-24 h-24 rounded-full object-cover border-2 border-rose-200 shadow-md" alt="Profile photo">
+                            <div>
+                                <h4 class="font-bold text-base text-slate-900">${escapeHtml(`${p.first_name || ''} ${p.last_name || ''}`.trim() || 'Anonymous')}</h4>
+                                <p class="text-rose-600 font-bold mt-0.5">${escapeHtml(p.occupation || 'N/A')}</p>
+                                <p class="text-slate-500 mt-1">📍 ${escapeHtml(p.district || 'N/A')} • ${escapeHtml(p.gender || '')}</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 pt-3 text-slate-700 bg-rose-50/30 p-5 rounded-2xl border border-rose-100">
+                            <div><b>Marital Status:</b> ${escapeHtml(p.marital_status || 'N/A')}</div>
+                            <div><b>Education:</b> ${escapeHtml(p.education || 'N/A')}</div>
+                            <div><b>Residence:</b> ${escapeHtml(p.residence_type || 'N/A')} (${escapeHtml(p.job_country || '')})</div>
+                            <div><b>Monthly Income:</b> ${canViewSensitive ? escapeHtml(p.monthly_income || 'N/A') : 'Hidden'}</div>
+                        </div>
+                        <div class="pt-3 border-t border-rose-100 mt-3">
+                            <b class="block text-slate-900 mb-2">About Myself:</b>
+                            <p class="text-slate-600 bg-rose-50/50 p-4 rounded-2xl leading-relaxed border border-rose-100">${escapeHtml(p.about_myself || 'No description provided.')}</p>
+                        </div>
+                        ${publicDetails}
+                        ${sensitiveDetails}
+                    `;
+                } else {
+                    content.innerHTML = `<p class="text-rose-500 font-bold text-center py-6">Could not load profile details.</p>`;
+                }
+            } catch (err) {
+                content.innerHTML = `<p class="text-rose-500 font-bold text-center py-6">Error loading profile details.</p>`;
+            }
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        async function updateProfile(e) {
+            e.preventDefault();
+            const age = document.getElementById('editAge').value;
+            const occupation = document.getElementById('editOccupation').value;
+            const district = document.getElementById('editDistrict').value;
+            const caste = document.getElementById('editCaste').value;
+            const drinking = document.getElementById('editDrinking').value;
+            const smoking = document.getElementById('editSmoking').value;
+            const foodPreferences = document.getElementById('editFoodPreferences').value;
+            const partnerPreferences = document.getElementById('editPartnerPreferences').value;
+            const photoPrivacy = document.getElementById('editPhotoPrivacy').value;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/v1/user/update-profile`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({
+                        age,
+                        occupation,
+                        district,
+                        caste,
+                        drinking,
+                        smoking,
+                        foodPreferences,
+                        partnerPreferences,
+                        photoPrivacy
+                    })
+                });
+                const data = await res.json();
+                alert(data.message);
+                if (data.success && data.user) {
+                    currentUser = { ...currentUser, ...data.user };
+                    populateProfileForm(currentUser);
+                }
+            } catch (err) { alert('Update failed.'); }
+        }
+
+        function populateProfileForm(user) {
+            if (!user) return;
+            const values = {
+                editAge: pick(user, 'age'),
+                editOccupation: pick(user, 'occupation'),
+                editDistrict: pick(user, 'district'),
+                editCaste: pick(user, 'caste'),
+                editDrinking: pick(user, 'drinking', 'drinking_habit'),
+                editSmoking: pick(user, 'smoking', 'smoking_habit'),
+                editFoodPreferences: pick(user, 'foodPreferences', 'food_preferences', 'food_preference'),
+                editPartnerPreferences: pick(user, 'partnerPreferences', 'partner_preferences', 'soulmate_preferences'),
+                editPhotoPrivacy: pick(user, 'photoPrivacy', 'photo_privacy')
+            };
+            Object.entries(values).forEach(([id, value]) => {
+                const field = document.getElementById(id);
+                if (field && value !== 'Not provided') field.value = value;
+            });
+        }
+
+        function applyFilters() {
+            const gender = document.getElementById('filterGender').value;
+            const minAge = parseInt(document.getElementById('filterMinAge').value) || 0;
+            const maxAge = parseInt(document.getElementById('filterMaxAge').value) || 100;
+            const occupationQuery = document.getElementById('filterOccupation').value.toLowerCase().trim();
+            const district = document.getElementById('filterDistrict').value;
+            const religion = document.getElementById('filterReligion').value;
+
+            const filtered = allFetchedProfiles.filter(p => {
+                const matchGender = (gender === 'All') || (p.gender === gender);
+                const pAge = parseInt(p.age) || 0;
+                const matchAge = (pAge >= minAge) && (pAge <= maxAge);
+                const pOccupation = (p.occupation || '').toLowerCase();
+                const matchOccupation = occupationQuery === '' || pOccupation.includes(occupationQuery);
+                const matchDistrict = (district === 'All') || (p.district === district);
+                const matchReligion = (religion === 'All') || (p.religion === religion);
+
+                return matchGender && matchAge && matchOccupation && matchDistrict && matchReligion;
+            });
+
+            renderProfiles(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('filterGender').value = 'All';
+            document.getElementById('filterMinAge').value = '';
+            document.getElementById('filterMaxAge').value = '';
+            document.getElementById('filterOccupation').value = '';
+            document.getElementById('filterDistrict').value = 'All';
+            document.getElementById('filterReligion').value = 'All';
+            renderProfiles(allFetchedProfiles);
+        }
+    </script>
+</body>
+</html>
