@@ -13,5 +13,8 @@
   "devDependencies": {
     "hono": "^4.13.12",
     "wrangler": "^4.144.0"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
   }
 }
