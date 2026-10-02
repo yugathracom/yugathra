@@ -93,36 +93,37 @@ io.on('connection', (socket) => {
     });
 });
 
-// WHATSAPP CLIENT SETUP (Windows Chrome Path Applied)
+// WHATSAPP CLIENT SETUP
+let latestQR = null;
+
 const whatsappClient = new Client({
-    authStrategy: new LocalAuth(),
+    authStrategy: new LocalAuth({ dataPath: '/tmp/.wwebjs_auth' }),
     puppeteer: {
-    executablePath: process.env.CHROME_PATH || undefined,
-    headless: true,
-    args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--single-process'
-    ]
+        executablePath: process.env.CHROME_PATH || undefined,
+        headless: true,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--no-zygote'
+        ]
     }
 });
 
 whatsappClient.on('qr', (qr) => {
-    console.log('\n===========================================================');
-    console.log('👇 QR CODE:');
-    console.log('===========================================================\n');
-    qrcode.generate(qr, { small: true });
+    latestQR = qr;
+    io.emit('whatsapp_qr', qr);
+    console.log('QR CODE generated. Open /whatsapp-qr to scan it.');
 });
 
 whatsappClient.on('ready', () => {
-    console.log('\n===========================================================');
-    console.log('✅ WhatsApp Web Connected!');
-    console.log('===========================================================\n');
+    latestQR = null;
+    io.emit('whatsapp_ready');
+    console.log('WhatsApp Web Connected!');
 });
 
-whatsappClient.initialize();
+// NOTE: whatsappClient.initialize() is called inside server.listen() at the bottom of this file.
 
 // Helper Function: WhatsApp Message Yawimata
 const sendWhatsAppNotification = async (phone, message) => {
@@ -1294,6 +1295,26 @@ app.put('/api/v1/user/update-profile', verifyUser, async (req, res) => {
     }
 });
 
+// WHATSAPP QR PAGE (scan once, then remove this route)
+app.get('/whatsapp-qr', async (req, res) => {
+    if (!latestQR) {
+        return res.send('<h2 style="font-family:sans-serif">No QR available. WhatsApp is already connected, or Chrome is still starting. Refresh in 30 seconds.</h2>');
+    }
+    try {
+        const qrImage = await require('qrcode').toDataURL(latestQR);
+        res.send(`
+            <html><head><meta http-equiv="refresh" content="20"></head>
+            <body style="font-family:sans-serif;text-align:center;padding:40px">
+                <h2>WhatsApp QR Code</h2>
+                <p>WhatsApp → Linked Devices → Link a device</p>
+                <img src="${qrImage}" width="300" height="300">
+            </body></html>
+        `);
+    } catch (error) {
+        res.status(500).send('Could not generate QR: ' + error.message);
+    }
+});
+
 // START SERVER
 const PORT = process.env.PORT || 5000;
 
@@ -1305,5 +1326,7 @@ server.listen(PORT, '0.0.0.0', () => {
             console.error('[DB Migration Error]', error.message);
         });
 
-    whatsappClient.initialize();
+    whatsappClient.initialize().catch(err => {
+        console.error('[WhatsApp Init Error]', err.message);
+    });
 });
