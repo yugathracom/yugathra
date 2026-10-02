@@ -1297,12 +1297,11 @@ app.put('/api/v1/user/update-profile', verifyUser, async (req, res) => {
 // START SERVER
 const PORT = process.env.PORT || 5000;
 
-Promise.all([ensureProfileColumns(), ensureAuthColumns()])
-    .catch(error => {
-        console.error('[DB Migration Error]', error.message);
-    })
-    .finally(() => {
-        server.listen(PORT, () => {
-            console.log(`🚀 Server running on port ${PORT}...`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on port ${PORT}...`);
+
+    Promise.all([ensureProfileColumns(), ensureAuthColumns()])
+        .catch(error => {
+            console.error('[DB Migration Error]', error.message);
         });
-    });
+});
