@@ -1304,4 +1304,6 @@ server.listen(PORT, '0.0.0.0', () => {
         .catch(error => {
             console.error('[DB Migration Error]', error.message);
         });
+
+    whatsappClient.initialize();
 });
